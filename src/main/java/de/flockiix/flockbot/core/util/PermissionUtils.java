@@ -7,9 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PermissionUtils {
-    public static Set<Permission> getMissingPermissions(Member selfMember, Set<Permission> requiredPermissions) {
+    public static Set<Permission> getMissingPermissions(Member member, Set<Permission> requiredPermissions) {
         return requiredPermissions.stream()
-                .filter(permission -> !selfMember.getPermissions().contains(permission))
+                .filter(permission -> !member.getPermissions().contains(permission))
                 .collect(Collectors.toSet());
     }
 }

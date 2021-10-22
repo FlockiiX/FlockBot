@@ -17,6 +17,11 @@ import java.util.Set;
 public class PrefixCommand extends Command {
     @Override
     public void onCommand(CommandEvent<String, ?> event) {
+        if(event.getGuild() == null) {
+            event.reply("You can only use this command on a guild");
+            return;
+        }
+
         var args = event.getArgs();
         if (args.isEmpty()) {
             event.reply(event.getUsage(this));
@@ -35,6 +40,11 @@ public class PrefixCommand extends Command {
 
     @Override
     public void onSlashCommand(CommandEvent<OptionMapping, SlashCommandEvent> event) {
+        if(event.getGuild() == null) {
+            event.getEvent().reply("You can only use this command on a guild").queue();
+            return;
+        }
+
         var prefix = event.getArgs().get(0).getAsString();
         if (prefix.length() > 5) {
             event.getEvent().reply("Maximum length of the prefix is 5 characters").queue();
