@@ -26,7 +26,7 @@ public class NewsletterCommand extends Command {
     public void onCommand(CommandEvent<String, ?> event) {
         var args = event.getArgs();
         if (args.isEmpty()) {
-            event.reply("Enter valid arguments");
+            event.getChannel().sendMessage("Enter valid arguments if you want to send a message").queue(message -> message.editMessage("Total newsletter subscribers: **" + SQLWorker.getNewsletterSubscribers().size() + "**").queueAfter(3, TimeUnit.SECONDS));
             return;
         }
 
@@ -61,7 +61,12 @@ public class NewsletterCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "Sends a newsletter";
+        return "Sends a newsletter or shows you the total number of subscribers";
+    }
+
+    @Override
+    public String getUsage() {
+        return "newsletter [message]";
     }
 
     @Override
