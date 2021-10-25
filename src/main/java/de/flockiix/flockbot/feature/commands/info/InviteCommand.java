@@ -18,18 +18,21 @@ public class InviteCommand extends Command {
     private static final String INVITE_LINK = Config.get("INVITE_LINK");
     private static final MessageEmbed INVITE_EMBED = EmbedBuilderUtils.createDefaultEmbed()
             .setTitle("Invite me!")
-            .setDescription("To invite the bot to one of your servers, you just have to press the button below this message").build();
+            .setDescription("To invite the bot to one of your servers, you just have to press the button below this message")
+            .build();
 
     @Override
     public void onCommand(CommandEvent<String, ?> event) {
         event.replyAction(INVITE_EMBED)
-                .setActionRow(Button.link(INVITE_LINK, "Click here to invite me")).queue();
+                .setActionRow(Button.link(INVITE_LINK, "Click here to invite me"))
+                .queue();
     }
 
     @Override
     public void onSlashCommand(CommandEvent<OptionMapping, SlashCommandEvent> event) {
         event.getEvent().replyEmbeds(INVITE_EMBED)
-                .addActionRow(Button.link(INVITE_LINK, "Click here to invite me")).queue();
+                .addActionRow(Button.link(INVITE_LINK, "Click here to invite me"))
+                .queue();
     }
 
     @Override
