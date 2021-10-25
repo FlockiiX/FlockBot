@@ -75,6 +75,7 @@ public class SQLConnector {
 
     private void createTables() {
         createTable("CREATE TABLE IF NOT EXISTS Prefixes (GUILDID VARCHAR(30), PREFIX VARCHAR(5));");
+        createTable("CREATE TABLE IF NOT EXISTS Newsletter (USERID VARCHAR(30), SUBSCRIBED BOOLEAN);");
         LOGGER.info("Tables created");
     }
 

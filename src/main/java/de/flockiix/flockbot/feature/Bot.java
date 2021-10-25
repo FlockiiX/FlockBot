@@ -1,14 +1,18 @@
 package de.flockiix.flockbot.feature;
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import de.flockiix.flockbot.core.bot.BotInfo;
 import de.flockiix.flockbot.core.bot.BotVersion;
 import de.flockiix.flockbot.core.command.CommandHandler;
 import de.flockiix.flockbot.core.command.MessageListener;
 import de.flockiix.flockbot.core.config.Config;
 import de.flockiix.flockbot.core.sql.SQLConnector;
+import de.flockiix.flockbot.feature.commands.developer.NewsletterCommand;
 import de.flockiix.flockbot.feature.commands.developer.ShutdownCommand;
+import de.flockiix.flockbot.feature.commands.info.BotCommand;
 import de.flockiix.flockbot.feature.commands.info.InviteCommand;
 import de.flockiix.flockbot.feature.commands.settings.PrefixCommand;
+import de.flockiix.flockbot.feature.listeners.ButtonClickListener;
 import de.flockiix.flockbot.feature.listeners.ReadyListener;
 import net.dv8tion.jda.api.GatewayEncoding;
 import net.dv8tion.jda.api.JDABuilder;
@@ -46,9 +50,12 @@ public class Bot {
         BotInfo.startTime = System.currentTimeMillis();
         BotInfo.botVersion = new BotVersion(Config.get("version"), true);
 
+        EventWaiter eventWaiter = new EventWaiter();
         Object[] listeners = {
                 new ReadyListener(),
-                new MessageListener(this)
+                new MessageListener(this),
+                new ButtonClickListener(),
+                eventWaiter
         };
 
         try {
@@ -77,8 +84,10 @@ public class Bot {
         } finally {
             commandHandler.registerCommands(
                     new ShutdownCommand(),
+                    new NewsletterCommand(eventWaiter),
                     new InviteCommand(),
-                    new PrefixCommand()
+                    new PrefixCommand(),
+                    new BotCommand()
             );
         }
     }
