@@ -13,7 +13,7 @@ import de.flockiix.flockbot.feature.commands.info.BotCommand;
 import de.flockiix.flockbot.feature.commands.info.InviteCommand;
 import de.flockiix.flockbot.feature.commands.settings.PrefixCommand;
 import de.flockiix.flockbot.feature.listeners.ButtonClickListener;
-import de.flockiix.flockbot.feature.listeners.ReadyListener;
+import de.flockiix.flockbot.feature.listeners.Listener;
 import net.dv8tion.jda.api.GatewayEncoding;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -52,7 +52,7 @@ public class Bot {
 
         EventWaiter eventWaiter = new EventWaiter();
         Object[] listeners = {
-                new ReadyListener(),
+                new Listener(),
                 new MessageListener(this),
                 new ButtonClickListener(),
                 eventWaiter
