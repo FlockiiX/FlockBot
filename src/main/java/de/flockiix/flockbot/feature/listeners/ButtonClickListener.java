@@ -18,11 +18,11 @@ public class ButtonClickListener extends ListenerAdapter {
             return;
 
         // NEWSLETTER
-        Component SUBSCRIBE_BUTTON = Button.of(ButtonStyle.PRIMARY, SUBSCRIBE_NEWSLETTER_ID, "Subscribe to FlockBot newsletter");
-        Component UNSUBSCRIBE_BUTTON = Button.of(ButtonStyle.SECONDARY, UNSUBSCRIBE_NEWSLETTER_ID, "Unsubscribe");
+        final Component SUBSCRIBE_BUTTON = Button.of(ButtonStyle.PRIMARY, SUBSCRIBE_NEWSLETTER_ID, "Subscribe to FlockBot newsletter");
+        final Component UNSUBSCRIBE_BUTTON = Button.of(ButtonStyle.SECONDARY, UNSUBSCRIBE_NEWSLETTER_ID, "Unsubscribe");
 
         if (event.getComponentId().equals(SUBSCRIBE_NEWSLETTER_ID)) {
-            String message = "You have successfully subscribed to the newsletter!";
+            var message = "You have successfully subscribed to the newsletter!";
             var user = event.getUser();
             var userId = user.getId();
 
@@ -35,7 +35,7 @@ public class ButtonClickListener extends ListenerAdapter {
             }
 
             SQLWorker.setNewsletter(userId, true);
-            String messageForUser = message;
+            final String messageForUser = message;
             if (event.getGuild() != null) {
                 user.openPrivateChannel().queue(channel -> channel.sendMessage(messageForUser).setActionRow(UNSUBSCRIBE_BUTTON).queue());
                 event.reply("Sent you a private message!").queue();
@@ -45,7 +45,7 @@ public class ButtonClickListener extends ListenerAdapter {
         }
 
         if (event.getComponentId().equals(UNSUBSCRIBE_NEWSLETTER_ID)) {
-            String message = "Too bad you are leaving! If this was a mistake or you wish to subscribe again, just click the button below!";
+            var message = "Too bad you are leaving! If this was a mistake or you wish to subscribe again, just click the button below!";
             var user = event.getUser();
             var userId = user.getId();
 

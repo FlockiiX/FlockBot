@@ -8,6 +8,7 @@ import de.flockiix.flockbot.core.config.Config;
 import de.flockiix.flockbot.core.util.EmbedBuilderUtils;
 import de.flockiix.flockbot.core.util.TimeUtils;
 import de.flockiix.flockbot.feature.listeners.ButtonClickListener;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -39,7 +40,7 @@ public class BotCommand extends Command {
     }
 
     private MessageEmbed getBotEmbed(long startTime) {
-        var jda = BotInfo.jda;
+        final JDA jda = BotInfo.jda;
 
         return EmbedBuilderUtils.createDefaultEmbed()
                 .setTitle("FlockBot Information", INVITE_LINK)
