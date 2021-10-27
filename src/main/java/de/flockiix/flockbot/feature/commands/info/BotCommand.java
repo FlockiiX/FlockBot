@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.interactions.components.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class BotCommand extends Command {
     private static final String INVITE_LINK = Config.get("INVITE_LINK");
@@ -79,8 +80,8 @@ public class BotCommand extends Command {
     }
 
     @Override
-    public List<String> getAliases() {
-        return List.of("stats", "information");
+    public Set<String> getAliases() {
+        return Set.of("stats", "information");
     }
 
     @Override

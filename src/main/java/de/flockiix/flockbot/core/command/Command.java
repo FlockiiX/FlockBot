@@ -34,8 +34,8 @@ public abstract class Command {
         return Set.of(Permission.EMPTY_PERMISSIONS);
     }
 
-    public List<String> getAliases() {
-        return Collections.emptyList();
+    public Set<String> getAliases() {
+        return Collections.emptySet();
     }
 
     public int getCoolDown() {

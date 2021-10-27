@@ -88,8 +88,8 @@ public class PrefixCommand extends Command {
     }
 
     @Override
-    public List<String> getAliases() {
-        return List.of("setprefix");
+    public Set<String> getAliases() {
+        return Set.of("setprefix");
     }
 
     @Override
