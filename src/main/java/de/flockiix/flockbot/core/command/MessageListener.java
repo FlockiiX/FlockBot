@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -39,11 +40,19 @@ public class MessageListener extends ListenerAdapter {
         var message = event.getMessage();
         var args = message.getContentRaw().split("\\s");
         var guild = event.getGuild();
+        var guildId = guild.getId();
         var channel = event.getChannel();
         var prefix = SQLWorker.getPrefix(guild.getId());
         var selfMember = guild.getSelfMember();
         var author = event.getAuthor();
         var userId = author.getId();
+
+        if (SQLWorker.isBlacklistSet(guildId)) {
+            if (isBadWordInMessage(guildId, message.getContentRaw())) {
+                channel.sendMessage("You have used a blacklisted word. ").queue();
+                return;
+            }
+        }
 
         if (!args[0].startsWith(prefix))
             return;
@@ -157,5 +166,18 @@ public class MessageListener extends ListenerAdapter {
         PermissionUtils.getMissingPermissions(member, permissionSet).forEach(permission -> stringBuilder.append("- ").append(permission.getName()).append("\n"));
 
         return stringBuilder;
+    }
+
+    private boolean isBadWordInMessage(String guildId, String message) {
+        ArrayList<String> words = SQLWorker.getBlackListWordsFromGuild(guildId);
+        String[] args = message.toLowerCase().split(" ");
+
+        for (String arg : args) {
+            if (words.contains(arg.toLowerCase())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

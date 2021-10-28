@@ -93,7 +93,7 @@ public class SQLWorker {
         ArrayList<String> userIds = new ArrayList<>();
         ResultSet resultSet = sql.query("SELECT * FROM Newsletter WHERE SUBSCRIBED=" + true + ";");
         try {
-            while (resultSet != null && resultSet.next()) {
+            while (resultSet.next()) {
                 userIds.add(resultSet.getString("USERID"));
             }
 
@@ -103,5 +103,61 @@ public class SQLWorker {
         }
 
         return userIds;
+    }
+
+    public static boolean isBlacklistSet(String guildId) {
+        ResultSet resultSet = sql.query("SELECT * FROM Blacklist WHERE GUILDID='" + guildId + "';");
+        try {
+            if (resultSet.next()) {
+                return true;
+            }
+
+            resultSet.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static boolean isWordOnBlackList(String guildId, String word) {
+        ResultSet resultSet = sql.query("SELECT * FROM Blacklist WHERE GUILDID='" + guildId + "' AND WORD='" + word + "';");
+        try {
+            if (resultSet.next()) {
+                return true;
+            }
+
+            resultSet.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static void addWordToBlacklist(String guildId, String word) {
+        if (!isWordOnBlackList(guildId, word))
+            sql.update("INSERT INTO Blacklist (GUILDID, WORD) VALUES ('" + guildId + "','" + word + "');");
+    }
+
+    public static void removeWordFromBlacklist(String guildId, String word) {
+        if (isWordOnBlackList(guildId, word))
+            sql.query("DELETE FROM Blacklist WHERE GUILDID='" + guildId + "' AND WORD='" + word + "';");
+    }
+
+    public static ArrayList<String> getBlackListWordsFromGuild(String guildId) {
+        ArrayList<String> words = new ArrayList<>();
+        ResultSet resultSet = sql.query("SELECT * FROM Blacklist WHERE GUILDID='" + guildId + "';");
+        try {
+            if (resultSet.next()) {
+                words.add(resultSet.getString("WORD"));
+            }
+
+            resultSet.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return words;
     }
 }
