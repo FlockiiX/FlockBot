@@ -48,7 +48,7 @@ public class MessageListener extends ListenerAdapter {
         var userId = author.getId();
 
         if (SQLWorker.isBlacklistSet(guildId)) {
-            if (isBadWordInMessage(guildId, message.getContentRaw())) {
+            if (isBadWordInMessage(guildId, message.getContentRaw()) && !event.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
                 channel.sendMessage("You have used a blacklisted word. ").queue();
                 return;
             }

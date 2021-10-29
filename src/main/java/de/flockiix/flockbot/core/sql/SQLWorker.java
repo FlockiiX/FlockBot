@@ -142,7 +142,7 @@ public class SQLWorker {
 
     public static void removeWordFromBlacklist(String guildId, String word) {
         if (isWordOnBlackList(guildId, word))
-            sql.query("DELETE FROM Blacklist WHERE GUILDID='" + guildId + "' AND WORD='" + word + "';");
+            sql.update("DELETE FROM Blacklist WHERE GUILDID='" + guildId + "' AND WORD='" + word + "';");
     }
 
     public static ArrayList<String> getBlackListWordsFromGuild(String guildId) {
