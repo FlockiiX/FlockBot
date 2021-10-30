@@ -17,7 +17,7 @@ import java.util.Set;
 public class PrefixCommand extends Command {
     @Override
     public void onCommand(CommandEvent<String, ?> event) {
-        if(event.getGuild() == null) {
+        if (event.getGuild() == null) {
             event.reply("You can only use this command on a guild");
             return;
         }
@@ -40,7 +40,7 @@ public class PrefixCommand extends Command {
 
     @Override
     public void onSlashCommand(CommandEvent<OptionMapping, SlashCommandEvent> event) {
-        if(event.getGuild() == null) {
+        if (event.getGuild() == null) {
             event.getEvent().reply("You can only use this command on a guild").queue();
             return;
         }
