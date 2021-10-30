@@ -1,5 +1,6 @@
 package de.flockiix.flockbot.feature;
 
+import com.google.gson.Gson;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import de.flockiix.flockbot.core.bot.BotInfo;
 import de.flockiix.flockbot.core.bot.BotVersion;
@@ -11,6 +12,7 @@ import de.flockiix.flockbot.feature.commands.developer.NewsletterCommand;
 import de.flockiix.flockbot.feature.commands.developer.ShutdownCommand;
 import de.flockiix.flockbot.feature.commands.info.BotCommand;
 import de.flockiix.flockbot.feature.commands.info.InviteCommand;
+import de.flockiix.flockbot.feature.commands.moderator.BlacklistCommand;
 import de.flockiix.flockbot.feature.commands.settings.PrefixCommand;
 import de.flockiix.flockbot.feature.listeners.ButtonClickListener;
 import de.flockiix.flockbot.feature.listeners.Listener;
@@ -21,11 +23,14 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import okhttp3.ConnectionPool;
+import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Base class to start the bot
@@ -37,7 +42,9 @@ import java.util.EnumSet;
 public class Bot {
     public static final SQLConnector sqlConnector = new SQLConnector();
     private static final Logger LOGGER = LoggerFactory.getLogger(Bot.class);
-    private final CommandHandler commandHandler = new CommandHandler();
+    private final CommandHandler commandHandler;
+    private final OkHttpClient httpClient;
+    private final Gson gson;
 
     /**
      * Starts and configures the bot
@@ -50,9 +57,17 @@ public class Bot {
         BotInfo.startTime = System.currentTimeMillis();
         BotInfo.botVersion = new BotVersion(Config.get("version"), true);
 
+        commandHandler = new CommandHandler();
+        httpClient = new OkHttpClient.Builder()
+                .connectionPool(
+                        new ConnectionPool(5, 10, TimeUnit.SECONDS)
+                )
+                .build();
+        gson = new Gson();
+
         EventWaiter eventWaiter = new EventWaiter();
         Object[] listeners = {
-                new Listener(),
+                new Listener(this),
                 new MessageListener(this),
                 new ButtonClickListener(),
                 eventWaiter
@@ -87,7 +102,8 @@ public class Bot {
                     new NewsletterCommand(eventWaiter),
                     new InviteCommand(),
                     new PrefixCommand(),
-                    new BotCommand()
+                    new BotCommand(),
+                    new BlacklistCommand()
             );
         }
     }
@@ -96,13 +112,15 @@ public class Bot {
         new Bot(Config.get("token"));
     }
 
-    /**
-     * Returns the CommandHandler instance
-     *
-     * @return the CommandHandler instance
-     * @since 1.0
-     */
     public CommandHandler getCommandHandler() {
         return commandHandler;
+    }
+
+    public OkHttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    public Gson getGson() {
+        return gson;
     }
 }
