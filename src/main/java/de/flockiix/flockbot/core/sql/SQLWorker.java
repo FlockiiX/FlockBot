@@ -105,6 +105,8 @@ public class SQLWorker {
         return userIds;
     }
 
+    // BLACKLIST
+
     public static boolean isBlacklistSet(String guildId) {
         ResultSet resultSet = sql.query("SELECT * FROM Blacklist WHERE GUILDID='" + guildId + "';");
         try {
@@ -149,7 +151,7 @@ public class SQLWorker {
         ArrayList<String> words = new ArrayList<>();
         ResultSet resultSet = sql.query("SELECT * FROM Blacklist WHERE GUILDID='" + guildId + "';");
         try {
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 words.add(resultSet.getString("WORD"));
             }
 
