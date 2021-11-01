@@ -1,7 +1,9 @@
 package de.flockiix.flockbot.core.command;
 
+import de.flockiix.flockbot.core.scheduled.ChangeMessages;
 import de.flockiix.flockbot.core.sql.SQLWorker;
 import de.flockiix.flockbot.core.util.EmbedBuilderUtils;
+import de.flockiix.flockbot.feature.Bot;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
@@ -14,14 +16,16 @@ public class CommandEvent<E, T> {
     private final MessageChannel channel;
     private final Guild guild;
     private final T event;
+    private final Bot bot;
 
-    protected CommandEvent(List<E> args, Message message, User author, MessageChannel channel, Guild guild, T event) {
+    protected CommandEvent(List<E> args, Message message, User author, MessageChannel channel, Guild guild, T event, Bot bot) {
         this.args = args;
         this.message = message;
         this.author = author;
         this.channel = channel;
         this.guild = guild;
         this.event = event;
+        this.bot = bot;
     }
 
     public List<E> getArgs() {
@@ -46,6 +50,10 @@ public class CommandEvent<E, T> {
 
     public T getEvent() {
         return event;
+    }
+
+    public Bot getBot() {
+        return bot;
     }
 
     public Member getSelfMember() {
@@ -81,5 +89,9 @@ public class CommandEvent<E, T> {
 
     public MessageEmbed createErrorEmbed(String text) {
         return EmbedBuilderUtils.createErrorEmbed().setDescription(text).build();
+    }
+
+    public String getErrorMessage() {
+        return ChangeMessages.getErrorMessage();
     }
 }

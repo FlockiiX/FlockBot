@@ -26,9 +26,11 @@ import java.util.regex.Pattern;
 
 public class MessageListener extends ListenerAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageListener.class);
+    private final Bot bot;
     private final CommandHandler commandHandler;
 
     public MessageListener(Bot bot) {
+        this.bot = bot;
         this.commandHandler = bot.getCommandHandler();
     }
 
@@ -91,7 +93,7 @@ public class MessageListener extends ListenerAdapter {
 
             String[] split = message.getContentRaw().replaceFirst("(?i)" + Pattern.quote(SQLWorker.getPrefix(guild.getId())) + "|" + selfMember.getAsMention() + "( +)?", "").split("\\s+");
             CommandUtils.addCommandCoolDown(command.getName(), userId);
-            CommandEvent<String, GuildMessageReceivedEvent> commandEvent = new CommandEvent<>(Arrays.asList(split).subList(1, split.length), event.getMessage(), event.getAuthor(), event.getChannel(), event.getGuild(), event);
+            CommandEvent<String, GuildMessageReceivedEvent> commandEvent = new CommandEvent<>(Arrays.asList(split).subList(1, split.length), event.getMessage(), event.getAuthor(), event.getChannel(), event.getGuild(), event, bot);
             command.onCommand(commandEvent);
         });
     }
@@ -144,7 +146,7 @@ public class MessageListener extends ListenerAdapter {
             }
 
             CommandUtils.addCommandCoolDown(command.getName(), userId);
-            CommandEvent<OptionMapping, SlashCommandEvent> commandEvent = new CommandEvent<>(event.getOptions(), null, author, channel, guild, event);
+            CommandEvent<OptionMapping, SlashCommandEvent> commandEvent = new CommandEvent<>(event.getOptions(), null, author, channel, guild, event, bot);
             command.onSlashCommand(commandEvent);
         });
     }
