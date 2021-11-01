@@ -8,6 +8,7 @@ import de.flockiix.flockbot.core.command.CommandHandler;
 import de.flockiix.flockbot.core.command.MessageListener;
 import de.flockiix.flockbot.core.config.Config;
 import de.flockiix.flockbot.core.sql.SQLConnector;
+import de.flockiix.flockbot.feature.commands.developer.DebugCommand;
 import de.flockiix.flockbot.feature.commands.developer.NewsletterCommand;
 import de.flockiix.flockbot.feature.commands.developer.ShutdownCommand;
 import de.flockiix.flockbot.feature.commands.info.BotCommand;
@@ -67,7 +68,7 @@ public class Bot {
 
         EventWaiter eventWaiter = new EventWaiter();
         Object[] listeners = {
-                new Listener(this),
+                new Listener(),
                 new MessageListener(this),
                 new ButtonClickListener(),
                 eventWaiter
@@ -100,6 +101,7 @@ public class Bot {
             commandHandler.registerCommands(
                     new ShutdownCommand(),
                     new NewsletterCommand(eventWaiter),
+                    new DebugCommand(),
                     new InviteCommand(),
                     new PrefixCommand(),
                     new BotCommand(),

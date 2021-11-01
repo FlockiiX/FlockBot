@@ -9,7 +9,6 @@ import okhttp3.internal.http.HttpMethod;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class ApiRequest<T> {
@@ -53,16 +52,18 @@ public class ApiRequest<T> {
 
                         try {
                             // Converting json to object
-                            success.accept(bot.getGson().fromJson(Objects.requireNonNull(response.body()).string(), route.getResponseType()));
-                        } catch (JsonSyntaxException exception) {
-                            failure.accept(new ApiException("Failed to handle api request"));
+                            assert response.body() != null;
+                            String json = response.body().string();
+                            success.accept(bot.getGson().fromJson(json, route.getResponseType()));
+                        } catch (JsonSyntaxException | AssertionError exception) {
+                            failure.accept(new ApiException(exception.getMessage()));
                         }
                     }
                 });
     }
 
     private Request createRequest() {
-        Request.Builder builder = new Request.Builder().url(BASE_URL + route.getRoute());
+        Request.Builder builder = new Request.Builder().url(BASE_URL + route.getUrl());
         String method = route.getRequestMethod().toString();
         if (body == null && HttpMethod.requiresRequestBody(method))
             body = EMPTY_BODY;
