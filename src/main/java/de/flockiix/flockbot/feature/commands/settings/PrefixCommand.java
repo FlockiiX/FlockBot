@@ -37,7 +37,7 @@ public class PrefixCommand extends Command {
         }
 
         new ServerRepositoryImpl(event.getBot()).updateServer(new Server(event.getGuild().getId(), prefix, null))
-                .request(
+                .executeRequest(
                         server -> {
                             SQLWorker.setPrefix(event.getGuild().getId(), prefix);
                             event.reply("Prefix set to `" + server.getPrefix() + "`");
@@ -59,7 +59,7 @@ public class PrefixCommand extends Command {
         }
 
         new ServerRepositoryImpl(event.getBot()).updateServer(new Server(event.getGuild().getId(), prefix, null))
-                .request(
+                .executeRequest(
                         server -> {
                             SQLWorker.setPrefix(event.getGuild().getId(), prefix);
                             event.getEvent().reply("Prefix set to `" + server.getPrefix() + "`").queue();
