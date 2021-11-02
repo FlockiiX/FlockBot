@@ -68,7 +68,7 @@ public class Bot {
 
         EventWaiter eventWaiter = new EventWaiter();
         Object[] listeners = {
-                new Listener(),
+                new Listener(this),
                 new MessageListener(this),
                 new ButtonClickListener(),
                 eventWaiter
