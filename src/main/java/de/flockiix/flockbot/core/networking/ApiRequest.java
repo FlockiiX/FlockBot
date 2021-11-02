@@ -17,19 +17,29 @@ public class ApiRequest<T> {
 
     private final Bot bot;
     private final Route route;
+    private final String url;
     private RequestBody body;
 
-    public ApiRequest(Bot bot, Route route, RequestBody body) {
+    public ApiRequest(Bot bot, Route route, String url, RequestBody body) {
         this.bot = bot;
         this.route = route;
+        this.url = url;
         this.body = body;
     }
 
-    public ApiRequest(Bot bot, Route route) {
-        this(bot, route, null);
+    public ApiRequest(Bot bot, Route route, RequestBody body) {
+        this(bot, route, "", body);
     }
 
-    public void request(Consumer<? super T> success, Consumer<? super Throwable> failure) {
+    public ApiRequest(Bot bot, Route route, String url) {
+        this(bot, route, url, null);
+    }
+
+    public ApiRequest(Bot bot, Route route) {
+        this(bot, route, "", null);
+    }
+
+    public void executeRequest(Consumer<? super T> success, Consumer<? super Throwable> failure) {
         bot.getHttpClient()
                 .newCall(createRequest())
                 .enqueue(new Callback() {
@@ -63,10 +73,13 @@ public class ApiRequest<T> {
     }
 
     private Request createRequest() {
-        Request.Builder builder = new Request.Builder().url(BASE_URL + route.getUrl());
+        Request.Builder builder = new Request.Builder().url(BASE_URL + route.getUrl() + "/" + url).addHeader("Authorization", Config.get("API_AUTHORIZATION"));
         String method = route.getRequestMethod().toString();
         if (body == null && HttpMethod.requiresRequestBody(method))
             body = EMPTY_BODY;
+
+        if (route.getRequestMethod() == RequestMethod.GET)
+            return builder.get().build();
 
         return builder.method(method, body).build();
     }

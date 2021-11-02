@@ -17,8 +17,7 @@ public class ServerRepositoryImpl implements ServerRepository {
 
     @Override
     public ApiRequest<Server> getServerByIdOrNull(String serverId) {
-        Server server = new Server(serverId, null, null);
-        return new ApiRequest<>(bot, Routes.SEARCH_SERVER, RequestBody.create(Utils.JSON, bot.getGson().toJson(server)));
+        return new ApiRequest<>(bot, Routes.SEARCH_SERVER, serverId);
     }
 
     @Override
@@ -28,7 +27,6 @@ public class ServerRepositoryImpl implements ServerRepository {
 
     @Override
     public ApiRequest<Void> deleteServer(String serverId) {
-        Server server = new Server(serverId, null, null);
-        return new ApiRequest<>(bot, Routes.DELETE_SERVER, RequestBody.create(Utils.JSON, bot.getGson().toJson(server)));
+        return new ApiRequest<>(bot, Routes.DELETE_SERVER, serverId);
     }
 }
