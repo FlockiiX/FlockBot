@@ -6,6 +6,8 @@ import de.flockiix.flockbot.core.command.CommandCategory;
 import de.flockiix.flockbot.core.command.CommandEvent;
 import de.flockiix.flockbot.feature.Bot;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
@@ -14,7 +16,17 @@ import java.util.List;
 
 public class ShutdownCommand extends Command {
     @Override
-    public void onCommand(CommandEvent<String, ?> event) {
+    public void onCommand(CommandEvent<String, GuildMessageReceivedEvent> event) {
+
+    }
+
+    @Override
+    public void onSlashCommand(CommandEvent<OptionMapping, SlashCommandEvent> event) {
+
+    }
+
+    @Override
+    public void onPrivateMessageCommand(CommandEvent<String, PrivateMessageReceivedEvent> event) {
         event.reply("Shutting down");
         try {
             Thread.sleep(1000);
@@ -25,11 +37,6 @@ public class ShutdownCommand extends Command {
         Bot.sqlConnector.close();
         BotInfo.jda.shutdownNow();
         System.exit(0);
-    }
-
-    @Override
-    public void onSlashCommand(CommandEvent<OptionMapping, SlashCommandEvent> event) {
-
     }
 
     @Override

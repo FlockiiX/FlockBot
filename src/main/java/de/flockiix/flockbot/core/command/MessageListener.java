@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("Duplicates")
 public class MessageListener extends ListenerAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageListener.class);
     private final Bot bot;
@@ -93,14 +94,45 @@ public class MessageListener extends ListenerAdapter {
 
             String[] split = message.getContentRaw().replaceFirst("(?i)" + Pattern.quote(SQLWorker.getPrefix(guild.getId())) + "|" + selfMember.getAsMention() + "( +)?", "").split("\\s+");
             CommandUtils.addCommandCoolDown(command.getName(), userId);
-            CommandEvent<String, GuildMessageReceivedEvent> commandEvent = new CommandEvent<>(Arrays.asList(split).subList(1, split.length), event.getMessage(), event.getAuthor(), event.getChannel(), event.getGuild(), event, bot);
+            CommandEvent<String, GuildMessageReceivedEvent> commandEvent = new CommandEvent<>(Arrays.asList(split).subList(1, split.length), message, author, channel, guild, event, bot);
             command.onCommand(commandEvent);
         });
     }
 
     @Override
     public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
-        // TODO
+        if (event.getAuthor().isBot() || event.getAuthor().isSystem())
+            return;
+        var message = event.getMessage();
+        var args = message.getContentRaw().split("\\s+");
+        var channel = event.getChannel();
+        var author = event.getAuthor();
+        var userId = author.getId();
+
+        var invoke = args[0];
+        var command = commandHandler.getCommand(invoke);
+
+        if (command == null) {
+            channel.sendMessage("This command does not exist").queue();
+            return;
+        }
+
+        if (command.getCommandCategory() == CommandCategory.DEVELOPER && !Utils.isFlockiiX(userId)) {
+            LOGGER.info("Non-Owner used Owner Command");
+            return;
+        }
+
+        if (CommandUtils.commandContainsCoolDown(command.getName(), userId) && !Utils.isFlockiiX(userId)) {
+            long secondsLeft = ((CommandUtils.getCommandCoolDown(command.getName(), userId) / 1000) + command.getCoolDown()) - (System.currentTimeMillis() / 1000);
+            if (secondsLeft > 0) {
+                message.reply("You cant use that commands for another " + secondsLeft + " seconds!").mentionRepliedUser(false).queue();
+                return;
+            }
+        }
+
+        CommandUtils.addCommandCoolDown(command.getName(), userId);
+        CommandEvent<String, PrivateMessageReceivedEvent> commandEvent = new CommandEvent<>(Arrays.asList(args).subList(1, args.length), message, author, channel, null, event, bot);
+        command.onPrivateMessageCommand(commandEvent);
     }
 
     @Override
