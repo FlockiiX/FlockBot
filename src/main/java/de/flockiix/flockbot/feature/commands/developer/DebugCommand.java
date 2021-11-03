@@ -4,6 +4,7 @@ import de.flockiix.flockbot.core.command.Command;
 import de.flockiix.flockbot.core.command.CommandCategory;
 import de.flockiix.flockbot.core.command.CommandEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class DebugCommand extends Command {
     @Override
-    public void onCommand(CommandEvent<String, ?> event) {
+    public void onCommand(CommandEvent<String, GuildMessageReceivedEvent> event) {
 
     }
 

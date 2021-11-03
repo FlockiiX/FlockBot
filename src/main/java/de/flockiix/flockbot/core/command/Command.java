@@ -2,6 +2,8 @@ package de.flockiix.flockbot.core.command;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
@@ -10,9 +12,11 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class Command {
-    public abstract void onCommand(CommandEvent<String, ?> event);
+    public abstract void onCommand(CommandEvent<String, GuildMessageReceivedEvent> event);
 
     public abstract void onSlashCommand(CommandEvent<OptionMapping, SlashCommandEvent> event);
+
+    public void onPrivateMessageCommand(CommandEvent<String, PrivateMessageReceivedEvent> event) {}
 
     public abstract String getName();
 

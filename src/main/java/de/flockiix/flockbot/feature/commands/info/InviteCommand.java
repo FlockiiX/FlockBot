@@ -7,6 +7,7 @@ import de.flockiix.flockbot.core.config.Config;
 import de.flockiix.flockbot.core.util.EmbedBuilderUtils;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.Button;
@@ -22,7 +23,7 @@ public class InviteCommand extends Command {
             .build();
 
     @Override
-    public void onCommand(CommandEvent<String, ?> event) {
+    public void onCommand(CommandEvent<String, GuildMessageReceivedEvent> event) {
         event.replyAction(INVITE_EMBED)
                 .setActionRow(Button.link(INVITE_LINK, "Click here to invite me"))
                 .queue();

@@ -23,7 +23,7 @@ public class NewsletterCommand extends Command {
     }
 
     @Override
-    public void onCommand(CommandEvent<String, ?> event) {
+    public void onCommand(CommandEvent<String, GuildMessageReceivedEvent> event) {
         var args = event.getArgs();
         if (args.isEmpty()) {
             event.getChannel().sendMessage("Enter valid arguments if you want to send a message").queue(message -> message.editMessage("Total newsletter subscribers: **" + SQLWorker.getNewsletterSubscribers().size() + "**").queueAfter(3, TimeUnit.SECONDS));

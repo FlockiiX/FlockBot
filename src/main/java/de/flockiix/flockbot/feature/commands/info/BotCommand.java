@@ -11,6 +11,7 @@ import de.flockiix.flockbot.feature.listeners.ButtonClickListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.Button;
@@ -27,7 +28,7 @@ public class BotCommand extends Command {
     private static final Component NEWSLETTER_COMPONENT = Button.of(ButtonStyle.PRIMARY, ButtonClickListener.SUBSCRIBE_NEWSLETTER_ID, "Subscribe to FlockBot newsletter");
 
     @Override
-    public void onCommand(CommandEvent<String, ?> event) {
+    public void onCommand(CommandEvent<String, GuildMessageReceivedEvent> event) {
         event.replyAction(getBotEmbed(System.currentTimeMillis()))
                 .setActionRow(INVITE_COMPONENT, NEWSLETTER_COMPONENT)
                 .queue();
