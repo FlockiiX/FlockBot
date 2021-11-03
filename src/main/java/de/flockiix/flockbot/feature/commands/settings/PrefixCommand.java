@@ -8,6 +8,7 @@ import de.flockiix.flockbot.core.repository.impl.ServerRepositoryImpl;
 import de.flockiix.flockbot.core.sql.SQLWorker;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -18,12 +19,7 @@ import java.util.Set;
 
 public class PrefixCommand extends Command {
     @Override
-    public void onCommand(CommandEvent<String, ?> event) {
-        if (event.getGuild() == null) {
-            event.reply("You can only use this command on a guild");
-            return;
-        }
-
+    public void onCommand(CommandEvent<String, GuildMessageReceivedEvent> event) {
         var args = event.getArgs();
         if (args.isEmpty()) {
             event.reply(event.getUsage(this));
@@ -31,6 +27,16 @@ public class PrefixCommand extends Command {
         }
 
         var prefix = String.join(" ", args);
+        execute(event, prefix);
+    }
+
+    @Override
+    public void onSlashCommand(CommandEvent<OptionMapping, SlashCommandEvent> event) {
+        var prefix = event.getArgs().get(0).getAsString();
+        execute(event, prefix);
+    }
+
+    private void execute(CommandEvent<?, ?> event, String prefix) {
         if (prefix.length() > 5) {
             event.reply("Maximum length of the prefix is 5 characters");
             return;
@@ -42,28 +48,6 @@ public class PrefixCommand extends Command {
                             SQLWorker.setPrefix(event.getGuild().getId(), prefix);
                             event.reply("Prefix set to `" + server.getPrefix() + "`");
                         }, throwable -> event.reply(event.getErrorMessage())
-                );
-    }
-
-    @Override
-    public void onSlashCommand(CommandEvent<OptionMapping, SlashCommandEvent> event) {
-        if (event.getGuild() == null) {
-            event.getEvent().reply("You can only use this command on a guild").queue();
-            return;
-        }
-
-        var prefix = event.getArgs().get(0).getAsString();
-        if (prefix.length() > 5) {
-            event.getEvent().reply("Maximum length of the prefix is 5 characters").queue();
-            return;
-        }
-
-        new ServerRepositoryImpl(event.getBot()).updateServer(new Server(event.getGuild().getId(), prefix, null))
-                .executeRequest(
-                        server -> {
-                            SQLWorker.setPrefix(event.getGuild().getId(), prefix);
-                            event.getEvent().reply("Prefix set to `" + server.getPrefix() + "`").queue();
-                        }, throwable -> event.getEvent().reply(event.getErrorMessage()).queue()
                 );
     }
 
