@@ -5,6 +5,7 @@ import de.flockiix.flockbot.core.sql.SQLWorker;
 import de.flockiix.flockbot.core.util.EmbedBuilderUtils;
 import de.flockiix.flockbot.feature.Bot;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.util.List;
@@ -60,14 +61,32 @@ public class CommandEvent<E, T> {
         return guild.getSelfMember();
     }
 
+    public User getSelfUser() {
+        return getSelfMember().getUser();
+    }
+
+    public Member getMember() {
+        return guild.getMember(getAuthor());
+    }
+
+    public User getUser() {
+        return author;
+    }
+
     // Actions
 
     public void reply(String text) {
-        channel.sendMessage(text).queue();
+        if (event instanceof SlashCommandEvent)
+            ((SlashCommandEvent) event).reply(text).queue();
+        else
+            channel.sendMessage(text).queue();
     }
 
     public void reply(MessageEmbed embed) {
-        channel.sendMessageEmbeds(embed).queue();
+        if (event instanceof SlashCommandEvent)
+            ((SlashCommandEvent) event).replyEmbeds(embed).queue();
+        else
+            channel.sendMessageEmbeds(embed).queue();
     }
 
     public MessageAction replyAction(String text) {
