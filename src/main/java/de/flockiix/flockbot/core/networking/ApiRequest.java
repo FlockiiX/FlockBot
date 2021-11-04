@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 public class ApiRequest<T> {
-    public static final String BASE_URL = Config.get("BASE_URL");
-    public static final RequestBody EMPTY_BODY = RequestBody.create(null, new byte[0]);
+    private static final String BASE_URL = Config.get("BASE_URL");
+    private static final RequestBody EMPTY_BODY = RequestBody.create(null, new byte[0]);
 
     private final Bot bot;
     private final Route route;
