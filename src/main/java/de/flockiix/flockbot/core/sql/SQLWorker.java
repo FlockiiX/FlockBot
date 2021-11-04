@@ -162,4 +162,43 @@ public class SQLWorker {
 
         return words;
     }
+
+    // WARNINGS
+
+    public static boolean isWarningSet(String guildId, String userId) {
+        ResultSet resultSet = sql.query("SELECT * FROM Warnings WHERE GUILDID='" + guildId + "' AND USERID='" + userId + "';");
+        try {
+            if (resultSet.next()) {
+                return true;
+            }
+
+            resultSet.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static int getWarnings(String guildId, String userId) {
+        ResultSet resultSet = sql.query("SELECT * FROM Warnings WHERE GUILDID='" + guildId + "' AND USERID='" + userId + "';");
+        try {
+            if (resultSet.next()) {
+                return resultSet.getInt("WARNINGS");
+            }
+
+            resultSet.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public static void setWarnings(String guildId, String userId, int warnings) {
+        if (isWarningSet(guildId, userId))
+            sql.update("UPDATE Warnings SET WARNINGS=" + warnings + " WHERE GUILDID='" + guildId + "' AND USERID='" + userId + "';");
+        else
+            sql.update("INSERT INTO Warnings (GUILDID, USERID, WARNINGS) VALUES ('" + guildId + "','" + userId + "'," + warnings + ");");
+    }
 }

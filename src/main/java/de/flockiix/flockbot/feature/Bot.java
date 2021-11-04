@@ -14,6 +14,7 @@ import de.flockiix.flockbot.feature.commands.developer.ShutdownCommand;
 import de.flockiix.flockbot.feature.commands.info.BotCommand;
 import de.flockiix.flockbot.feature.commands.info.InviteCommand;
 import de.flockiix.flockbot.feature.commands.moderator.BlacklistCommand;
+import de.flockiix.flockbot.feature.commands.moderator.WarnCommand;
 import de.flockiix.flockbot.feature.commands.settings.PrefixCommand;
 import de.flockiix.flockbot.feature.listeners.ButtonClickListener;
 import de.flockiix.flockbot.feature.listeners.Listener;
@@ -105,7 +106,8 @@ public class Bot {
                     new InviteCommand(),
                     new PrefixCommand(),
                     new BotCommand(),
-                    new BlacklistCommand()
+                    new BlacklistCommand(),
+                    new WarnCommand()
             );
         }
     }

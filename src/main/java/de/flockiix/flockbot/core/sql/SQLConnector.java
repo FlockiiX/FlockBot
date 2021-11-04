@@ -77,6 +77,7 @@ public class SQLConnector {
         createTable("CREATE TABLE IF NOT EXISTS Prefixes (GUILDID VARCHAR(30), PREFIX VARCHAR(5));");
         createTable("CREATE TABLE IF NOT EXISTS Newsletter (USERID VARCHAR(30), SUBSCRIBED BOOLEAN);");
         createTable("CREATE TABLE IF NOT EXISTS Blacklist (GUILDID VARCHAR(30), WORD VARCHAR(30));");
+        createTable("CREATE TABLE IF NOT EXISTS Warnings (GUILDID VARCHAR(30), USERID VARCHAR(30), WARNINGS INTEGER);");
         LOGGER.info("Tables created");
     }
 
