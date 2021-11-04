@@ -57,6 +57,6 @@ public class Listener extends ListenerAdapter {
     private void schedule() {
         Timer scheduler = new Timer();
         scheduler.schedule(new ChangeActivity(), 0, 60 * 1000);
-        scheduler.schedule(new ChangeMessages(), 10 * 1000, 15 * 1000);
+        scheduler.schedule(new ChangeMessages(), 0, 15 * 1000);
     }
 }
