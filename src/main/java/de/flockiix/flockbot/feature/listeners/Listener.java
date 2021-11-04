@@ -13,13 +13,10 @@ import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Timer;
 
 public class Listener extends ListenerAdapter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Listener.class);
     private final Bot bot;
 
     public Listener(Bot bot) {
@@ -50,7 +47,7 @@ public class Listener extends ListenerAdapter {
                             }
                         }, failure -> {
                             if (event.getGuild().getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
-                                channel.sendMessage(ChangeMessages.getErrorMessage()).queue();
+                                channel.sendMessage(ChangeMessages.getErrorMessage() + failure.getMessage()).queue();
                             }
                         }
                 )
@@ -60,6 +57,6 @@ public class Listener extends ListenerAdapter {
     private void schedule() {
         Timer scheduler = new Timer();
         scheduler.schedule(new ChangeActivity(), 0, 60 * 1000);
-        scheduler.schedule(new ChangeMessages(), 0, 15 * 1000);
+        scheduler.schedule(new ChangeMessages(), 10 * 1000, 15 * 1000);
     }
 }

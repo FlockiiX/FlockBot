@@ -47,7 +47,7 @@ public class PrefixCommand extends Command {
                         server -> {
                             SQLWorker.setPrefix(event.getGuild().getId(), prefix);
                             event.reply("Prefix set to `" + server.getPrefix() + "`");
-                        }, throwable -> event.reply(event.getErrorMessage())
+                        }, throwable -> event.reply(event.getErrorMessage(throwable.getMessage()))
                 );
     }
 

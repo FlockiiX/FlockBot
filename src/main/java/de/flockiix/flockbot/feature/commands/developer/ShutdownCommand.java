@@ -13,11 +13,12 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ShutdownCommand extends Command {
     @Override
     public void onCommand(CommandEvent<String, GuildMessageReceivedEvent> event) {
-
+        execute(event);
     }
 
     @Override
@@ -27,9 +28,16 @@ public class ShutdownCommand extends Command {
 
     @Override
     public void onPrivateMessageCommand(CommandEvent<String, PrivateMessageReceivedEvent> event) {
-        event.reply("Shutting down");
+        execute(event);
+    }
+
+    private void execute(CommandEvent<?, ?> event) {
+        event.getMessage().delete().queue();
+        event.replyAction("Shutting down").queue(
+                message -> message.delete().queueAfter(2, TimeUnit.SECONDS)
+        );
         try {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

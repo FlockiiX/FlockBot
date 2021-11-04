@@ -6,6 +6,7 @@ import de.flockiix.flockbot.core.util.EmbedBuilderUtils;
 import de.flockiix.flockbot.feature.Bot;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.util.List;
@@ -66,7 +67,15 @@ public class CommandEvent<E, T> {
     }
 
     public Member getMember() {
-        return guild.getMember(getAuthor());
+        if (event instanceof GuildMessageReceivedEvent) {
+            return ((GuildMessageReceivedEvent) event).getMember();
+        }
+
+        if (event instanceof SlashCommandEvent) {
+            return ((SlashCommandEvent) event).getMember();
+        }
+
+        return null;
     }
 
     public User getUser() {
@@ -110,7 +119,7 @@ public class CommandEvent<E, T> {
         return EmbedBuilderUtils.createErrorEmbed().setDescription(text).build();
     }
 
-    public String getErrorMessage() {
-        return ChangeMessages.getErrorMessage();
+    public String getErrorMessage(String text) {
+        return ChangeMessages.getErrorMessage() + " " + text;
     }
 }
