@@ -41,18 +41,19 @@ public class MessageListener extends ListenerAdapter {
             return;
 
         var message = event.getMessage();
-        var args = message.getContentRaw().split("\\s");
+        var args = message.getContentRaw().split("\\s+");
         var guild = event.getGuild();
         var guildId = guild.getId();
         var channel = event.getChannel();
         var prefix = SQLWorker.getPrefix(guild.getId());
         var selfMember = guild.getSelfMember();
-        var author = event.getAuthor();
-        var userId = author.getId();
+        var user = event.getAuthor();
+        var userId = user.getId();
+        var member = event.getMember();
 
         if (SQLWorker.isBlacklistSet(guildId)) {
-            if (isBadWordInMessage(guildId, message.getContentRaw()) && !event.getMember().hasPermission(Permission.MANAGE_CHANNEL)) {
-                channel.sendMessage("You have used a blacklisted word. ").queue();
+            if (isBadWordInMessage(guildId, message.getContentRaw()) && !member.hasPermission(Permission.MANAGE_CHANNEL)) {
+                channel.sendMessage("You have used a blacklisted word.").queue();
                 return;
             }
         }
@@ -78,36 +79,35 @@ public class MessageListener extends ListenerAdapter {
             return;
         }
 
-        guild.retrieveMember(author).queue(member -> {
-            if (!member.hasPermission(command.getRequiredMemberPermissions())) {
-                channel.sendMessageEmbeds(getMissingPermissionsEmbed(member, command.getRequiredMemberPermissions())).queue();
+        if (!member.hasPermission(command.getRequiredMemberPermissions())) {
+            channel.sendMessageEmbeds(getMissingPermissionsEmbed(member, command.getRequiredMemberPermissions())).queue();
+            return;
+        }
+
+        if (CommandUtils.commandContainsCoolDown(command.getName(), userId) && !Utils.isFlockiiX(userId)) {
+            long secondsLeft = ((CommandUtils.getCommandCoolDown(command.getName(), userId) / 1000) + command.getCoolDown()) - (System.currentTimeMillis() / 1000);
+            if (secondsLeft > 0) {
+                message.reply("You cant use that commands for another " + secondsLeft + " seconds!").mentionRepliedUser(false).queue();
                 return;
             }
+        }
 
-            if (CommandUtils.commandContainsCoolDown(command.getName(), userId) && !Utils.isFlockiiX(userId)) {
-                long secondsLeft = ((CommandUtils.getCommandCoolDown(command.getName(), userId) / 1000) + command.getCoolDown()) - (System.currentTimeMillis() / 1000);
-                if (secondsLeft > 0) {
-                    message.reply("You cant use that commands for another " + secondsLeft + " seconds!").mentionRepliedUser(false).queue();
-                    return;
-                }
-            }
-
-            String[] split = message.getContentRaw().replaceFirst("(?i)" + Pattern.quote(SQLWorker.getPrefix(guild.getId())) + "|" + selfMember.getAsMention() + "( +)?", "").split("\\s+");
-            CommandUtils.addCommandCoolDown(command.getName(), userId);
-            CommandEvent<String, GuildMessageReceivedEvent> commandEvent = new CommandEvent<>(Arrays.asList(split).subList(1, split.length), message, author, channel, guild, event, bot);
-            command.onCommand(commandEvent);
-        });
+        String[] split = message.getContentRaw().replaceFirst("(?i)" + Pattern.quote(SQLWorker.getPrefix(guild.getId())) + "|" + selfMember.getAsMention() + "( +)?", "").split("\\s+");
+        CommandUtils.addCommandCoolDown(command.getName(), userId);
+        CommandEvent<String, GuildMessageReceivedEvent> commandEvent = new CommandEvent<>(Arrays.asList(split).subList(1, split.length), message, user, channel, guild, event, bot);
+        command.onCommand(commandEvent);
     }
 
     @Override
     public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
         if (event.getAuthor().isBot() || event.getAuthor().isSystem())
             return;
+
         var message = event.getMessage();
         var args = message.getContentRaw().split("\\s+");
         var channel = event.getChannel();
-        var author = event.getAuthor();
-        var userId = author.getId();
+        var user = event.getAuthor();
+        var userId = user.getId();
 
         var invoke = args[0];
         var command = commandHandler.getCommand(invoke);
@@ -131,7 +131,7 @@ public class MessageListener extends ListenerAdapter {
         }
 
         CommandUtils.addCommandCoolDown(command.getName(), userId);
-        CommandEvent<String, PrivateMessageReceivedEvent> commandEvent = new CommandEvent<>(Arrays.asList(args).subList(1, args.length), message, author, channel, null, event, bot);
+        CommandEvent<String, PrivateMessageReceivedEvent> commandEvent = new CommandEvent<>(Arrays.asList(args).subList(1, args.length), message, user, channel, null, event, bot);
         command.onPrivateMessageCommand(commandEvent);
     }
 
@@ -145,8 +145,9 @@ public class MessageListener extends ListenerAdapter {
         var guild = event.getGuild();
         var channel = event.getMessageChannel();
         var selfMember = guild.getSelfMember();
-        var author = event.getUser();
-        var userId = author.getId();
+        var user = event.getUser();
+        var userId = user.getId();
+        var member = event.getMember();
 
         if (command == null) {
             event.reply("This command does not exist").queue();
@@ -163,24 +164,22 @@ public class MessageListener extends ListenerAdapter {
             return;
         }
 
-        guild.retrieveMember(author).queue(member -> {
-            if (!member.hasPermission(command.getRequiredMemberPermissions())) {
-                event.replyEmbeds(getMissingPermissionsEmbed(member, command.getRequiredMemberPermissions())).queue();
+        if (!member.hasPermission(command.getRequiredMemberPermissions())) {
+            event.replyEmbeds(getMissingPermissionsEmbed(member, command.getRequiredMemberPermissions())).queue();
+            return;
+        }
+
+        if (CommandUtils.commandContainsCoolDown(command.getName(), userId) && !Utils.isFlockiiX(userId)) {
+            long secondsLeft = ((CommandUtils.getCommandCoolDown(command.getName(), userId) / 1000) + command.getCoolDown()) - (System.currentTimeMillis() / 1000);
+            if (secondsLeft > 0) {
+                event.reply("You cant use that commands for another " + secondsLeft + " seconds!").queue();
                 return;
             }
+        }
 
-            if (CommandUtils.commandContainsCoolDown(command.getName(), userId) && !Utils.isFlockiiX(userId)) {
-                long secondsLeft = ((CommandUtils.getCommandCoolDown(command.getName(), userId) / 1000) + command.getCoolDown()) - (System.currentTimeMillis() / 1000);
-                if (secondsLeft > 0) {
-                    event.reply("You cant use that commands for another " + secondsLeft + " seconds!").queue();
-                    return;
-                }
-            }
-
-            CommandUtils.addCommandCoolDown(command.getName(), userId);
-            CommandEvent<OptionMapping, SlashCommandEvent> commandEvent = new CommandEvent<>(event.getOptions(), null, author, channel, guild, event, bot);
-            command.onSlashCommand(commandEvent);
-        });
+        CommandUtils.addCommandCoolDown(command.getName(), userId);
+        CommandEvent<OptionMapping, SlashCommandEvent> commandEvent = new CommandEvent<>(event.getOptions(), null, user, channel, guild, event, bot);
+        command.onSlashCommand(commandEvent);
     }
 
     private MessageEmbed getMissingPermissionsEmbed(Member member, Set<Permission> permissionSet) {

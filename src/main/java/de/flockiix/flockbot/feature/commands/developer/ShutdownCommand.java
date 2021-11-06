@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class ShutdownCommand extends Command {
     @Override
     public void onCommand(CommandEvent<String, GuildMessageReceivedEvent> event) {
+        event.getMessage().delete().queue();
         execute(event);
     }
 
@@ -32,7 +33,6 @@ public class ShutdownCommand extends Command {
     }
 
     private void execute(CommandEvent<?, ?> event) {
-        event.getMessage().delete().queue();
         event.replyAction("Shutting down").queue(
                 message -> message.delete().queueAfter(2, TimeUnit.SECONDS)
         );

@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class CommandEvent<E, T> {
     private final List<E> args;
@@ -98,6 +99,17 @@ public class CommandEvent<E, T> {
             channel.sendMessageEmbeds(embed).queue();
     }
 
+    public void reply(String text, int seconds) {
+        if (event instanceof SlashCommandEvent)
+            ((SlashCommandEvent) event).reply(text).queue(
+                    message -> message.deleteOriginal().queueAfter(seconds, TimeUnit.SECONDS)
+            );
+        else
+            channel.sendMessage(text).queue(
+                    message -> message.delete().queueAfter(seconds, TimeUnit.SECONDS)
+            );
+    }
+
     public MessageAction replyAction(String text) {
         return channel.sendMessage(text);
     }
@@ -117,6 +129,10 @@ public class CommandEvent<E, T> {
 
     public MessageEmbed createErrorEmbed(String text) {
         return EmbedBuilderUtils.createErrorEmbed().setDescription(text).build();
+    }
+
+    public MessageEmbed createDefaultEmbed(String text) {
+        return EmbedBuilderUtils.createDefaultEmbed().setDescription(text).build();
     }
 
     public String getErrorMessage(String text) {
