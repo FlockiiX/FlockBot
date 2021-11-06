@@ -24,7 +24,7 @@ dependencies {
     implementation('net.dv8tion:JDA:4.3.0_334')
 
     // GSON
-    implementation('com.google.code.gson:gson:2.8.8')
+    implementation('com.google.code.gson:gson:2.8.9')
 
     // Chewtils
     implementation('pw.chew:jda-chewtils:1.22.0')
