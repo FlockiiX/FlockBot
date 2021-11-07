@@ -84,9 +84,9 @@ public class BlacklistCommand extends Command {
         StringBuilder stringBuilder = new StringBuilder();
         int blacklistSize = SQLWorker.getBlackListWordsFromGuild(guildId).size();
         for (int i = 0; i < blacklistSize; i++) {
-            stringBuilder.append("**").append(SQLWorker.getBlackListWordsFromGuild(guildId).get(i)).append("**");
+            stringBuilder.append("`").append(SQLWorker.getBlackListWordsFromGuild(guildId).get(i)).append("`");
             if (i < blacklistSize - 1) {
-                stringBuilder.append("|");
+                stringBuilder.append("**/**");
             }
         }
 

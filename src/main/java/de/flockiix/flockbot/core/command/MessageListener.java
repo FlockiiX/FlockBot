@@ -187,14 +187,14 @@ public class MessageListener extends ListenerAdapter {
         String target = member.getUser().isBot() ? "The Bot is" : "You are";
         permissionsEmbed.setTitle(target + " missing following permissions:");
 
-        StringBuilder stringBuilder = getMissingPermissions(member, permissionSet);
+        StringBuilder stringBuilder = getMissingPermissionsAsStringBuilder(member, permissionSet);
 
         permissionsEmbed.setDescription(stringBuilder.toString());
 
         return permissionsEmbed.build();
     }
 
-    private StringBuilder getMissingPermissions(Member member, Set<Permission> permissionSet) {
+    private StringBuilder getMissingPermissionsAsStringBuilder(Member member, Set<Permission> permissionSet) {
         StringBuilder stringBuilder = new StringBuilder();
         PermissionUtils.getMissingPermissions(member, permissionSet).forEach(permission -> stringBuilder.append("- ").append(permission.getName()).append("\n"));
 
