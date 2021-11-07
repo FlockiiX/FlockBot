@@ -13,7 +13,9 @@ import de.flockiix.flockbot.feature.commands.developer.NewsletterCommand;
 import de.flockiix.flockbot.feature.commands.developer.ShutdownCommand;
 import de.flockiix.flockbot.feature.commands.info.BotCommand;
 import de.flockiix.flockbot.feature.commands.info.InviteCommand;
+import de.flockiix.flockbot.feature.commands.moderator.BanCommand;
 import de.flockiix.flockbot.feature.commands.moderator.BlacklistCommand;
+import de.flockiix.flockbot.feature.commands.moderator.KickCommand;
 import de.flockiix.flockbot.feature.commands.moderator.WarnCommand;
 import de.flockiix.flockbot.feature.commands.settings.PrefixCommand;
 import de.flockiix.flockbot.feature.listeners.ButtonClickListener;
@@ -107,7 +109,9 @@ public class Bot {
                     new PrefixCommand(),
                     new BotCommand(),
                     new BlacklistCommand(),
-                    new WarnCommand()
+                    new WarnCommand(),
+                    new KickCommand(),
+                    new BanCommand()
             );
         }
     }
