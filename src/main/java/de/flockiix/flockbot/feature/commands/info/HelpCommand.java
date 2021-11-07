@@ -34,7 +34,7 @@ public class HelpCommand extends Command {
     }
 
     private void execute(CommandEvent<?, ?> event, String search) {
-        CommandHandler commandHandler = event.getBot().getCommandHandler();
+        var commandHandler = event.getBot().getCommandHandler();
         if (search == null) {
             event.reply(getCommandsEmbed(commandHandler));
             return;
@@ -75,7 +75,6 @@ public class HelpCommand extends Command {
         new HashSet<>(permissionSet).forEach(permission -> stringBuilder.append("- ").append(permission.getName()).append("\n"));
         if (stringBuilder.isEmpty())
             stringBuilder.append("No permission required");
-
 
         return stringBuilder;
     }
