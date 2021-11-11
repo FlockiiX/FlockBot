@@ -45,7 +45,6 @@ import java.util.concurrent.TimeUnit;
  * @since 1.0
  */
 public class Bot {
-    public static final SQLConnector sqlConnector = new SQLConnector();
     private static final Logger LOGGER = LoggerFactory.getLogger(Bot.class);
     private final CommandHandler commandHandler;
     private final OkHttpClient httpClient;
@@ -61,6 +60,7 @@ public class Bot {
         LOGGER.info("Booting...");
         BotInfo.startTime = System.currentTimeMillis();
         BotInfo.botVersion = new BotVersion(Config.get("version"), true);
+        BotInfo.sqlConnector = new SQLConnector();
 
         commandHandler = new CommandHandler();
         httpClient = new OkHttpClient.Builder()

@@ -4,7 +4,6 @@ import de.flockiix.flockbot.core.bot.BotInfo;
 import de.flockiix.flockbot.core.command.Command;
 import de.flockiix.flockbot.core.command.CommandCategory;
 import de.flockiix.flockbot.core.command.CommandEvent;
-import de.flockiix.flockbot.feature.Bot;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
@@ -42,7 +41,7 @@ public class ShutdownCommand extends Command {
             e.printStackTrace();
         }
 
-        Bot.sqlConnector.close();
+        BotInfo.sqlConnector.close();
         BotInfo.jda.shutdownNow();
         System.exit(0);
     }

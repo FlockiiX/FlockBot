@@ -15,7 +15,7 @@ public class Utils {
     public static boolean isInteger(String someString) {
         try {
             Integer.parseInt(someString);
-        } catch (NumberFormatException | NullPointerException e) {
+        } catch (NumberFormatException | NullPointerException exception) {
             return false;
         }
 

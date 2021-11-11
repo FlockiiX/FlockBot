@@ -1,15 +1,15 @@
 package de.flockiix.flockbot.core.sql;
 
 
+import de.flockiix.flockbot.core.bot.BotInfo;
 import de.flockiix.flockbot.core.config.Config;
-import de.flockiix.flockbot.feature.Bot;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class SQLWorker {
-    private static final SQLConnector sql = Bot.sqlConnector;
+    private static final SQLConnector sql = BotInfo.sqlConnector;
 
     // PREFIX
 
