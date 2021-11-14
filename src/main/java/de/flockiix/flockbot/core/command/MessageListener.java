@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("Duplicates")
@@ -53,7 +54,10 @@ public class MessageListener extends ListenerAdapter {
 
         if (SQLWorker.isBlacklistSet(guildId)) {
             if (isBadWordInMessage(guildId, message.getContentRaw()) && !member.hasPermission(Permission.MANAGE_CHANNEL)) {
-                channel.sendMessage("You have used a blacklisted word.").queue();
+                message.delete().queue();
+                channel.sendMessage("Your message has been deleted!\nReason: You have used a blacklisted word.").queue(
+                        botMessage -> botMessage.delete().queueAfter(5, TimeUnit.SECONDS)
+                );
                 return;
             }
         }
