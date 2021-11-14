@@ -19,6 +19,7 @@ import de.flockiix.flockbot.feature.commands.moderator.BlacklistCommand;
 import de.flockiix.flockbot.feature.commands.moderator.KickCommand;
 import de.flockiix.flockbot.feature.commands.moderator.WarnCommand;
 import de.flockiix.flockbot.feature.commands.settings.PrefixCommand;
+import de.flockiix.flockbot.feature.commands.util.GeneratePasswordCommand;
 import de.flockiix.flockbot.feature.listeners.ButtonClickListener;
 import de.flockiix.flockbot.feature.listeners.Listener;
 import net.dv8tion.jda.api.GatewayEncoding;
@@ -113,7 +114,8 @@ public class Bot {
                     new WarnCommand(),
                     new KickCommand(),
                     new BanCommand(),
-                    new HelpCommand()
+                    new HelpCommand(),
+                    new GeneratePasswordCommand()
             );
         }
     }

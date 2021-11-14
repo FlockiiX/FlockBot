@@ -5,5 +5,6 @@ public enum CommandCategory {
     SETTINGS,
     MODERATOR,
     INFO,
+    UTIL,
     OTHER
 }
