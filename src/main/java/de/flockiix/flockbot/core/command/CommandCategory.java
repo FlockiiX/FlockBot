@@ -6,5 +6,6 @@ public enum CommandCategory {
     MODERATOR,
     INFO,
     UTIL,
-    OTHER
+    OTHER,
+    HIDDEN
 }

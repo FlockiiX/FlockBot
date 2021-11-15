@@ -38,7 +38,7 @@ public class CommandHandler {
         CommandListUpdateAction listUpdateAction = BotInfo.jda.updateCommands();
         for (Command command : getCommands()) {
             CommandData commandData = new CommandData(command.getName(), command.getDescription()).addOptions(command.getOptions());
-            if (command.getCommandCategory() == CommandCategory.DEVELOPER)
+            if (command.getCommandCategory() == CommandCategory.DEVELOPER || command.getCommandCategory() == CommandCategory.HIDDEN)
                 continue;
             listUpdateAction.addCommands(commandData);
         }

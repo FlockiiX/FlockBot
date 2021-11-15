@@ -68,10 +68,14 @@ public class GeneratePasswordCommand extends Command {
             return;
         }
 
-        event.getAuthor().openPrivateChannel().queue(
-                privateChannel -> privateChannel.sendMessage("Here is your password: ```" + password + "```").queue()
-        );
-        event.reply("Sent you a private message with your password");
+        event.getAuthor().openPrivateChannel().submit()
+                .thenCompose(privateChannel -> privateChannel.sendMessage("Here is your password: ```" + password + "```").submit())
+                .whenComplete((message, throwable) -> {
+                    if (throwable != null)
+                        event.reply("Open your dms");
+                    else
+                        event.reply("Sent you a private message with your password");
+                });
     }
 
     @Override

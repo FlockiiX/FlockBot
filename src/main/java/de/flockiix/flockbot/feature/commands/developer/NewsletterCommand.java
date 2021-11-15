@@ -32,20 +32,23 @@ public class NewsletterCommand extends Command {
 
         var message = String.join(" ", args);
         event.reply("Do you really want to send the following message to all newsletter subscribers?");
-        event.reply("```" + message + "```");
+        event.getChannel().sendMessage("```" + message + "```").queue(
+                channel -> eventWaiter.waitForEvent(
+                        GuildMessageReceivedEvent.class,
+                        e -> e.getChannel().equals(event.getChannel()) && e.getAuthor().equals(event.getAuthor()) && !e.getAuthor().isBot(),
+                        e -> {
+                            if (!e.getMessage().getContentRaw().equals("true")) {
+                                event.reply("Message not sent");
+                                return;
+                            }
 
-        eventWaiter.waitForEvent(
-                GuildMessageReceivedEvent.class,
-                e -> e.getChannel().equals(event.getChannel()) && e.getAuthor().equals(event.getAuthor()) && !e.getAuthor().isBot(),
-                e -> {
-                    if (!e.getMessage().getContentRaw().equals("true")) {
-                        event.reply("Message not sent");
-                        return;
-                    }
-
-                    SQLWorker.getNewsletterSubscribers().forEach(userId -> BotInfo.jda.retrieveUserById(userId).queue(user -> user.openPrivateChannel().queue(channel -> channel.sendMessage(message).queue())));
-                    event.reply("Newsletter sent successfully");
-                }, 15, TimeUnit.SECONDS, () -> event.reply("You took too long to answer")
+                            SQLWorker.getNewsletterSubscribers()
+                                    .forEach(userId -> BotInfo.jda.retrieveUserById(userId).queue(
+                                            user -> user.openPrivateChannel().submit().thenCompose(privateChannel -> privateChannel.sendMessage(message).submit())
+                                    ));
+                            event.reply("Newsletter sent successfully");
+                        }, 15, TimeUnit.SECONDS, () -> event.reply("You took too long to answer")
+                )
         );
     }
 

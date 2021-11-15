@@ -39,6 +39,6 @@ public class DebugCommand extends Command {
 
     @Override
     public CommandCategory getCommandCategory() {
-        return CommandCategory.DEVELOPER;
+        return CommandCategory.HIDDEN;
     }
 }
