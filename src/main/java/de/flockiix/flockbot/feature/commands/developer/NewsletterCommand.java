@@ -1,6 +1,5 @@
 package de.flockiix.flockbot.feature.commands.developer;
 
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import de.flockiix.flockbot.core.bot.BotInfo;
 import de.flockiix.flockbot.core.command.Command;
 import de.flockiix.flockbot.core.command.CommandCategory;
@@ -16,12 +15,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class NewsletterCommand extends Command {
-    private final EventWaiter eventWaiter;
-
-    public NewsletterCommand(EventWaiter eventWaiter) {
-        this.eventWaiter = eventWaiter;
-    }
-
     @Override
     public void onCommand(CommandEvent<String, GuildMessageReceivedEvent> event) {
         var args = event.getArgs();
@@ -33,7 +26,7 @@ public class NewsletterCommand extends Command {
         var message = String.join(" ", args);
         event.reply("Do you really want to send the following message to all newsletter subscribers?");
         event.getChannel().sendMessage("```" + message + "```").queue(
-                channel -> eventWaiter.waitForEvent(
+                channel -> event.getBot().getEventWaiter().waitForEvent(
                         GuildMessageReceivedEvent.class,
                         e -> e.getChannel().equals(event.getChannel()) && e.getAuthor().equals(event.getAuthor()) && !e.getAuthor().isBot(),
                         e -> {

@@ -4,22 +4,11 @@ import com.google.gson.Gson;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import de.flockiix.flockbot.core.bot.BotInfo;
 import de.flockiix.flockbot.core.bot.BotVersion;
+import de.flockiix.flockbot.core.command.Command;
 import de.flockiix.flockbot.core.command.CommandHandler;
 import de.flockiix.flockbot.core.command.MessageListener;
 import de.flockiix.flockbot.core.config.Config;
 import de.flockiix.flockbot.core.sql.SQLConnector;
-import de.flockiix.flockbot.feature.commands.developer.DebugCommand;
-import de.flockiix.flockbot.feature.commands.developer.NewsletterCommand;
-import de.flockiix.flockbot.feature.commands.developer.ShutdownCommand;
-import de.flockiix.flockbot.feature.commands.info.BotCommand;
-import de.flockiix.flockbot.feature.commands.info.HelpCommand;
-import de.flockiix.flockbot.feature.commands.info.InviteCommand;
-import de.flockiix.flockbot.feature.commands.moderator.BanCommand;
-import de.flockiix.flockbot.feature.commands.moderator.BlacklistCommand;
-import de.flockiix.flockbot.feature.commands.moderator.KickCommand;
-import de.flockiix.flockbot.feature.commands.moderator.WarnCommand;
-import de.flockiix.flockbot.feature.commands.settings.PrefixCommand;
-import de.flockiix.flockbot.feature.commands.util.GeneratePasswordCommand;
 import de.flockiix.flockbot.feature.listeners.ButtonClickListener;
 import de.flockiix.flockbot.feature.listeners.Listener;
 import net.dv8tion.jda.api.GatewayEncoding;
@@ -31,11 +20,16 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,6 +44,7 @@ public class Bot {
     private final CommandHandler commandHandler;
     private final OkHttpClient httpClient;
     private final Gson gson;
+    private final EventWaiter eventWaiter;
 
     /**
      * Starts and configures the bot
@@ -70,8 +65,8 @@ public class Bot {
                 )
                 .build();
         gson = new Gson();
+        eventWaiter = new EventWaiter();
 
-        EventWaiter eventWaiter = new EventWaiter();
         Object[] listeners = {
                 new Listener(this),
                 new MessageListener(this),
@@ -102,22 +97,23 @@ public class Bot {
             LOGGER.info("Bot started successfully");
         } catch (final LoginException | InterruptedException exception) {
             LOGGER.error("Failed to start Bot", exception);
-        } finally {
-            commandHandler.registerCommands(
-                    new ShutdownCommand(),
-                    new NewsletterCommand(eventWaiter),
-                    new DebugCommand(),
-                    new InviteCommand(),
-                    new PrefixCommand(),
-                    new BotCommand(),
-                    new BlacklistCommand(),
-                    new WarnCommand(),
-                    new KickCommand(),
-                    new BanCommand(),
-                    new HelpCommand(),
-                    new GeneratePasswordCommand()
-            );
         }
+
+        Reflections reflections = new Reflections("de.flockiix.flockbot.feature.commands");
+        Set<Class<? extends Command>> classes = reflections.getSubTypesOf(Command.class);
+        List<Command> commands = new ArrayList<>();
+        classes.forEach(aClass -> {
+            try {
+                Constructor<?> constructor = aClass.getConstructors()[0];
+                Object object = constructor.newInstance();
+                Command command = (Command) object;
+                commands.add(command);
+            } catch (Exception exception) {
+                LOGGER.error("Failed to load commands", exception);
+            }
+        });
+
+        commandHandler.registerCommands(commands.toArray(Command[]::new));
     }
 
     public static void main(String[] args) {
@@ -134,5 +130,9 @@ public class Bot {
 
     public Gson getGson() {
         return gson;
+    }
+
+    public EventWaiter getEventWaiter() {
+        return eventWaiter;
     }
 }

@@ -26,13 +26,16 @@ dependencies {
     // GSON
     implementation('com.google.code.gson:gson:2.8.9')
 
-    // Chewtils
+    // CHEWTILS
     implementation('pw.chew:jda-chewtils:1.22.0')
 
-    // dotenv
+    // DOTENV
     implementation('io.github.cdimascio:java-dotenv:5.2.2')
 
-    // SQLite
+    // REFLECTIONS
+    implementation('org.reflections:reflections:0.10.2')
+
+    // SQLITE
     implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
 
     // JUNIT
