@@ -117,7 +117,6 @@ public class MessageListener extends ListenerAdapter {
         var command = commandHandler.getCommand(invoke);
 
         if (command == null) {
-            channel.sendMessage("This command does not exist").queue();
             return;
         }
 
