@@ -1,52 +1,52 @@
 package de.flockiix.flockbot.core.util;
 
 public class TimeUtils {
-    public static String getTime(long t) {
+    public static String getTime(long millisSeconds) {
         String end = "";
 
         long current = System.currentTimeMillis();
-        long dif = current - t;
+        long difference = current - millisSeconds;
 
-        if (dif == 0) {
+        if (difference == 0) {
             return "0 Seconds";
         }
 
-        int s = 0;
-        int m = 0;
-        int h = 0;
-        int d = 0;
+        int seconds = 0;
+        int minutes = 0;
+        int hours = 0;
+        int days = 0;
 
-        while (dif >= 1000) {
-            dif -= 1000;
-            ++s;
+        while (difference >= 1000) {
+            difference -= 1000;
+            ++seconds;
         }
-        while (s >= 60) {
-            s -= 60;
-            ++m;
+        while (seconds >= 60) {
+            seconds -= 60;
+            ++minutes;
         }
-        while (m >= 60) {
-            m -= 60;
-            ++h;
+        while (minutes >= 60) {
+            minutes -= 60;
+            ++hours;
         }
-        while (h >= 24) {
-            h -= 24;
-            ++d;
-        }
-
-        if (d != 0) {
-            end += d + " Days" + (((h != 0 || m != 0 || s != 0) ? ", " : ""));
+        while (hours >= 24) {
+            hours -= 24;
+            ++days;
         }
 
-        if (h != 0) {
-            end += h + " Hours" + (((m != 0 || s != 0) ? ", " : ""));
+        if (days != 0) {
+            end += days + " Days" + (((hours != 0 || minutes != 0 || seconds != 0) ? ", " : ""));
         }
 
-        if (m != 0) {
-            end += m + " Minutes" + ((s != 0 ? ", " : ""));
+        if (hours != 0) {
+            end += hours + " Hours" + (((minutes != 0 || seconds != 0) ? ", " : ""));
         }
 
-        if (s != 0) {
-            end += s + " Seconds";
+        if (minutes != 0) {
+            end += minutes + " Minutes" + ((seconds != 0 ? ", " : ""));
+        }
+
+        if (seconds != 0) {
+            end += seconds + " Seconds";
         }
 
         return end;
