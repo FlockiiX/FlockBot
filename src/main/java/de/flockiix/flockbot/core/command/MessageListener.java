@@ -112,7 +112,6 @@ public class MessageListener extends ListenerAdapter {
         var channel = event.getChannel();
         var user = event.getAuthor();
         var userId = user.getId();
-
         var invoke = args[0];
         var command = commandHandler.getCommand(invoke);
 
