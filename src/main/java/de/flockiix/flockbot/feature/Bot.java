@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,6 +47,7 @@ public class Bot {
     private final OkHttpClient httpClient;
     private final Gson gson;
     private final EventWaiter eventWaiter;
+    private final ScheduledExecutorService executorService;
 
     /**
      * Starts and configures the bot
@@ -66,6 +69,7 @@ public class Bot {
                 .build();
         gson = new Gson();
         eventWaiter = new EventWaiter();
+        executorService = new ScheduledThreadPoolExecutor(10);
 
         Object[] listeners = {
                 new Listener(this),
@@ -134,5 +138,9 @@ public class Bot {
 
     public EventWaiter getEventWaiter() {
         return eventWaiter;
+    }
+
+    public ScheduledExecutorService getExecutorService() {
+        return executorService;
     }
 }

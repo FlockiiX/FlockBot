@@ -41,6 +41,7 @@ public class ShutdownCommand extends Command {
             e.printStackTrace();
         }
 
+        event.getBot().getExecutorService().shutdown();
         BotInfo.sqlConnector.close();
         BotInfo.jda.shutdownNow();
         System.exit(0);

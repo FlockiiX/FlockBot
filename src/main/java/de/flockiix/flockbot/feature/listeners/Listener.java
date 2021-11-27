@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 public class Listener extends ListenerAdapter {
     private final Bot bot;
@@ -34,19 +34,20 @@ public class Listener extends ListenerAdapter {
         final TextChannel channel = event.getGuild().getSystemChannel();
         if (channel == null) return;
 
-        var guildId = event.getGuild().getId();
+        var guild = event.getGuild();
+        var guildId = guild.getId();
         new ServerRepositoryImpl(bot).getServerByIdOrNull(guildId).executeRequest(
                 found -> {
-                    if (event.getGuild().getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
+                    if (guild.getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
                         channel.sendMessage("I am back again :D\nThank you for adding **FlockBot** to your guild!").queue();
                     }
                 }, notFound -> new ServerRepositoryImpl(bot).updateServer(new Server(guildId, SQLWorker.getPrefix(guildId), false)).executeRequest(
                         success -> {
-                            if (event.getGuild().getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
+                            if (guild.getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
                                 channel.sendMessage("Thank you for adding **FlockBot** to your guild!").queue();
                             }
                         }, failure -> {
-                            if (event.getGuild().getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
+                            if (guild.getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
                                 channel.sendMessage(ChangeMessages.getErrorMessage() + failure.getMessage()).queue();
                             }
                         }
@@ -55,8 +56,7 @@ public class Listener extends ListenerAdapter {
     }
 
     private void schedule() {
-        Timer scheduler = new Timer();
-        scheduler.schedule(new ChangeActivity(), 0, 60 * 1000);
-        scheduler.schedule(new ChangeMessages(), 0, 15 * 1000);
+        bot.getExecutorService().scheduleWithFixedDelay(ChangeMessages.changeMessages(), 0, 15, TimeUnit.SECONDS);
+        bot.getExecutorService().scheduleWithFixedDelay(ChangeActivity.changeActivity(), 0, 60, TimeUnit.SECONDS);
     }
 }
