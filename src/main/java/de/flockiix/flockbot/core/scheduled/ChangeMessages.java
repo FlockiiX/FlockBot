@@ -6,6 +6,11 @@ public class ChangeMessages {
     private static int errorMessage = 0;
     private static String errorMessageContent = "";
 
+    /**
+     * Returns a random error message from the config.
+     *
+     * @return a random error message
+     */
     public static String getErrorMessage() {
         return errorMessageContent;
     }

@@ -46,13 +46,13 @@ public class RandomCommand extends Command {
         var lower = Integer.parseInt(lowerBound);
         var upper = Integer.parseInt(upperBound);
 
-        if (upper <= lower) {
-            event.reply("The upperbound must be greater than the lowerbound");
+        if (lower <= 0) {
+            event.reply("Enter integers greater than 0");
             return;
         }
 
-        if (lower <= 0) {
-            event.reply("Enter integers greater than 0");
+        if (upper <= lower) {
+            event.reply("The upperbound must be greater than the lowerbound");
             return;
         }
 

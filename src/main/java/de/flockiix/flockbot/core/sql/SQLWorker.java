@@ -13,6 +13,12 @@ public class SQLWorker {
 
     // PREFIX
 
+    /**
+     * Checks if a guild has a custom prefix.
+     *
+     * @param guildId the id of the guild
+     * @return true if the guild has a custom prefix and false otherwise
+     */
     public static boolean isPrefixSet(String guildId) {
         ResultSet resultSet = sql.query("SELECT * FROM Prefixes WHERE GUILDID='" + guildId + "';");
         try {
@@ -28,6 +34,13 @@ public class SQLWorker {
         return false;
     }
 
+
+    /**
+     * Gets the prefix of the guild.
+     *
+     * @param guildId the id of the guild
+     * @return the custom prefix if set otherwise the default prefix
+     */
     public static String getPrefix(String guildId) {
         ResultSet resultSet = sql.query("SELECT * FROM Prefixes WHERE GUILDID='" + guildId + "';");
         try {
@@ -43,6 +56,12 @@ public class SQLWorker {
         return Config.get("default_prefix");
     }
 
+    /**
+     * Sets a prefix for the guild
+     *
+     * @param guildId the id of the guild
+     * @param prefix  the prefix you want to set
+     */
     public static void setPrefix(String guildId, String prefix) {
         if (isPrefixSet(guildId))
             sql.update("UPDATE Prefixes SET PREFIX='" + prefix + "' WHERE GUILDID='" + guildId + "';");
@@ -52,6 +71,12 @@ public class SQLWorker {
 
     // NEWSLETTER
 
+    /**
+     * Checks if the user has the newsletter set.
+     *
+     * @param userId the id of the user
+     * @return true if the user has the newsletter subscribed or unsubscribed and false otherwise
+     */
     public static boolean isNewsletterSet(String userId) {
         ResultSet resultSet = sql.query("SELECT * FROM Newsletter WHERE USERID='" + userId + "';");
         try {
@@ -67,6 +92,12 @@ public class SQLWorker {
         return false;
     }
 
+    /**
+     * Checks if the user has subscribed to the newsletter.
+     *
+     * @param userId the id of the user
+     * @return true if the user has subscribed and false otherwise
+     */
     public static boolean isNewsletterSubscribed(String userId) {
         ResultSet resultSet = sql.query("SELECT * FROM Newsletter WHERE USERID='" + userId + "';");
         try {
@@ -82,6 +113,12 @@ public class SQLWorker {
         return false;
     }
 
+    /**
+     * Sets the Subscription to the newsletter for a user.
+     *
+     * @param userId     the id of the user
+     * @param subscribed true for subscribed and false for unsubscribed
+     */
     public static void setNewsletter(String userId, boolean subscribed) {
         if (isNewsletterSet(userId))
             sql.update("UPDATE Newsletter SET SUBSCRIBED=" + subscribed + " WHERE USERID='" + userId + "';");
@@ -89,6 +126,11 @@ public class SQLWorker {
             sql.update("INSERT INTO Newsletter (USERID, SUBSCRIBED) VALUES ('" + userId + "'," + subscribed + ");");
     }
 
+    /**
+     * Gets all newsletter subscribers.
+     *
+     * @return a list with all newsletter subscribers
+     */
     public static ArrayList<String> getNewsletterSubscribers() {
         ArrayList<String> userIds = new ArrayList<>();
         ResultSet resultSet = sql.query("SELECT * FROM Newsletter WHERE SUBSCRIBED=" + true + ";");
@@ -107,6 +149,12 @@ public class SQLWorker {
 
     // BLACKLIST
 
+    /**
+     * Checks if there are any words on the blacklist for the guild.
+     *
+     * @param guildId the id of the guild
+     * @return true if there are any words on the blacklist and false otherwise
+     */
     public static boolean isBlacklistSet(String guildId) {
         ResultSet resultSet = sql.query("SELECT * FROM Blacklist WHERE GUILDID='" + guildId + "';");
         try {
@@ -122,6 +170,13 @@ public class SQLWorker {
         return false;
     }
 
+    /**
+     * Checks if a word is blacklisted on the guild or not.
+     *
+     * @param guildId the id of the guild
+     * @param word    the word you want to check if it is blacklisted
+     * @return true if the word is blacklisted and false otherwise
+     */
     public static boolean isWordOnBlackList(String guildId, String word) {
         ResultSet resultSet = sql.query("SELECT * FROM Blacklist WHERE GUILDID='" + guildId + "' AND WORD='" + word + "';");
         try {
@@ -137,16 +192,34 @@ public class SQLWorker {
         return false;
     }
 
+    /**
+     * Adds a word to the blacklist of the guild.
+     *
+     * @param guildId the id of the guild
+     * @param word    the word you want to blacklist on the guild
+     */
     public static void addWordToBlacklist(String guildId, String word) {
         if (!isWordOnBlackList(guildId, word))
             sql.update("INSERT INTO Blacklist (GUILDID, WORD) VALUES ('" + guildId + "','" + word + "');");
     }
 
+    /**
+     * Removes a word from the blacklist of the guild.
+     *
+     * @param guildId the id of the guild
+     * @param word    the word you want to unblock on the guild
+     */
     public static void removeWordFromBlacklist(String guildId, String word) {
         if (isWordOnBlackList(guildId, word))
             sql.update("DELETE FROM Blacklist WHERE GUILDID='" + guildId + "' AND WORD='" + word + "';");
     }
 
+    /**
+     * Gets all words of the blacklist of a guild.
+     *
+     * @param guildId the id of the guild
+     * @return the list with all blacklisted words from the guild
+     */
     public static ArrayList<String> getBlackListWordsFromGuild(String guildId) {
         ArrayList<String> words = new ArrayList<>();
         ResultSet resultSet = sql.query("SELECT * FROM Blacklist WHERE GUILDID='" + guildId + "';");
@@ -165,6 +238,13 @@ public class SQLWorker {
 
     // WARNINGS
 
+    /**
+     * Checks if a user has any warnings on the guild.
+     *
+     * @param guildId the id of the guild
+     * @param userId  the id of the user
+     * @return true if the user has any warnings on the guild and false otherwise
+     */
     public static boolean isWarningSet(String guildId, String userId) {
         ResultSet resultSet = sql.query("SELECT * FROM Warnings WHERE GUILDID='" + guildId + "' AND USERID='" + userId + "';");
         try {
@@ -180,6 +260,13 @@ public class SQLWorker {
         return false;
     }
 
+    /**
+     * Gets the amount of warnings of a user of a guild.
+     *
+     * @param guildId the id of the guild
+     * @param userId  the id of the user
+     * @return the amount of warnings the user has on this guild
+     */
     public static int getWarnings(String guildId, String userId) {
         ResultSet resultSet = sql.query("SELECT * FROM Warnings WHERE GUILDID='" + guildId + "' AND USERID='" + userId + "';");
         try {
@@ -195,6 +282,13 @@ public class SQLWorker {
         return 0;
     }
 
+    /**
+     * Sets the amount of warnings for a user of the guild.
+     *
+     * @param guildId  the id of the guild
+     * @param userId   the id of the user
+     * @param warnings the amount of warnings you want to set
+     */
     public static void setWarnings(String guildId, String userId, int warnings) {
         if (isWarningSet(guildId, userId))
             sql.update("UPDATE Warnings SET WARNINGS=" + warnings + " WHERE GUILDID='" + guildId + "' AND USERID='" + userId + "';");

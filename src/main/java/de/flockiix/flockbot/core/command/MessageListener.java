@@ -203,6 +203,13 @@ public class MessageListener extends ListenerAdapter {
         return stringBuilder;
     }
 
+    /**
+     * Scans a message for blacklisted words.
+     *
+     * @param guildId the id of the guild
+     * @param message the message you want to check
+     * @return true if there is a bad word in the message and false otherwise
+     */
     private boolean isBadWordInMessage(String guildId, String message) {
         ArrayList<String> words = SQLWorker.getBlackListWordsFromGuild(guildId);
         String[] args = message.toLowerCase().split(" ");

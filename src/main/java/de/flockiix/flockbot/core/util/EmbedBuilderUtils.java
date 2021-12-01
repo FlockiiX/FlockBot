@@ -7,10 +7,20 @@ import java.awt.*;
 import java.time.Instant;
 
 public class EmbedBuilderUtils {
+    /**
+     * Creates and returns an error embed.
+     *
+     * @return the EmbedBuilder
+     */
     public static EmbedBuilder createErrorEmbed() {
         return new EmbedBuilder().setColor(Color.RED);
     }
 
+    /**
+     * Creates and returns a default embed.
+     *
+     * @return the EmbedBuilder
+     */
     public static EmbedBuilder createDefaultEmbed() {
         return new EmbedBuilder()
                 .setColor(Config.COLOR)

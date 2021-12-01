@@ -12,6 +12,10 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @param <E> the list type of the arguments
+ * @param <T> the event
+ */
 public class CommandEvent<E, T> {
     private final List<E> args;
     private final Message message;
@@ -21,6 +25,17 @@ public class CommandEvent<E, T> {
     private final T event;
     private final Bot bot;
 
+    /**
+     * Creates a CommandEvent
+     *
+     * @param args    the args
+     * @param message the message of the event
+     * @param author  the author of the event
+     * @param channel the channel of the event
+     * @param guild   the guild of the event
+     * @param event   the event
+     * @param bot     the bot instance
+     */
     protected CommandEvent(List<E> args, Message message, User author, MessageChannel channel, Guild guild, T event, Bot bot) {
         this.args = args;
         this.message = message;
@@ -85,6 +100,11 @@ public class CommandEvent<E, T> {
 
     // Actions
 
+    /**
+     * Sends a message into the channel of the event.
+     *
+     * @param text the text/message you want to send
+     */
     public void reply(String text) {
         if (event instanceof SlashCommandEvent)
             ((SlashCommandEvent) event).reply(text).queue();
@@ -92,6 +112,11 @@ public class CommandEvent<E, T> {
             channel.sendMessage(text).queue();
     }
 
+    /**
+     * Sends a embed message into the channel of the event.
+     *
+     * @param embed the text/message you want to send
+     */
     public void reply(MessageEmbed embed) {
         if (event instanceof SlashCommandEvent)
             ((SlashCommandEvent) event).replyEmbeds(embed).queue();
@@ -99,6 +124,12 @@ public class CommandEvent<E, T> {
             channel.sendMessageEmbeds(embed).queue();
     }
 
+    /**
+     * Sends a message into the channel of the event and deletes it after the given time.
+     *
+     * @param text    the text/message you want to send
+     * @param seconds the number of seconds after which the message should be deleted
+     */
     public void reply(String text, int seconds) {
         if (event instanceof SlashCommandEvent)
             ((SlashCommandEvent) event).reply(text).queue(
@@ -118,23 +149,52 @@ public class CommandEvent<E, T> {
         return channel.sendMessageEmbeds(embed);
     }
 
+    /**
+     * Gets the usage of a command.
+     *
+     * @param command the command
+     * @return the usage as a string
+     */
     public String getUsage(Command command) {
         return "You used the command incorrectly.\n" +
                 "Usage: `" + getPrefix() + command.getUsage() + "`";
     }
 
+    /**
+     * Gets the prefix of the guild.
+     *
+     * @return the custom prefix of the guild if set and otherwise the default prefix
+     */
     public String getPrefix() {
         return SQLWorker.getPrefix(guild.getId());
     }
 
+    /**
+     * Creates an error embed with the message.
+     *
+     * @param text the text you want to set for the embed
+     * @return the error embed with text
+     */
     public MessageEmbed createErrorEmbed(String text) {
         return EmbedBuilderUtils.createErrorEmbed().setDescription(text).build();
     }
 
+    /**
+     * Creates a default embed with the message.
+     *
+     * @param text the text you want to set for the embed
+     * @return the default embed with text
+     */
     public MessageEmbed createDefaultEmbed(String text) {
         return EmbedBuilderUtils.createDefaultEmbed().setDescription(text).build();
     }
 
+    /**
+     * Gets a random error message.
+     *
+     * @param text the cause of the error
+     * @return a random errormessage with the cause
+     */
     public String getErrorMessage(String text) {
         return ChangeMessages.getErrorMessage() + " " + text;
     }

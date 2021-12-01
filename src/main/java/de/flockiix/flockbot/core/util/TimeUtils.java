@@ -1,11 +1,17 @@
 package de.flockiix.flockbot.core.util;
 
 public class TimeUtils {
-    public static String getTime(long millisSeconds) {
+    /**
+     * Gets a formatted string between now and the given milliseconds.
+     *
+     * @param milliseconds the milliseconds
+     * @return a formatted string of the milliseconds
+     */
+    public static String getTime(long milliseconds) {
         String end = "";
 
         long current = System.currentTimeMillis();
-        long difference = current - millisSeconds;
+        long difference = current - milliseconds;
 
         if (difference == 0) {
             return "0 Seconds";

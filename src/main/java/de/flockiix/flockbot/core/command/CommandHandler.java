@@ -13,8 +13,16 @@ import java.util.List;
 
 public class CommandHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandHandler.class);
+    /**
+     * ArrayList with all registered commands
+     */
     private final List<Command> commands = new ArrayList<>();
 
+    /**
+     * Registers the given commands.
+     *
+     * @param commandsToRegister the commands to be registered
+     */
     public void registerCommands(Command... commandsToRegister) {
         List<Command> toRegisterCommands = new ArrayList<>(Arrays.asList(commandsToRegister));
 
@@ -34,7 +42,10 @@ public class CommandHandler {
         LOGGER.info("Command registration finished");
     }
 
-    public void registerSlashCommands() {
+    /**
+     * Registers all commands in the list with commands as SlashCommands.
+     */
+    private void registerSlashCommands() {
         CommandListUpdateAction listUpdateAction = BotInfo.jda.updateCommands();
         for (Command command : getCommands()) {
             CommandData commandData = new CommandData(command.getName(), command.getDescription()).addOptions(command.getOptions());
@@ -46,13 +57,23 @@ public class CommandHandler {
         listUpdateAction.queue();
     }
 
+    /**
+     * Searches for a command with the given name/alias
+     *
+     * @param search the name/alias of the command
+     * @return the command if found by its name or aliases. Otherwise null
+     */
     public Command getCommand(String search) {
         String searchLower = search.toLowerCase();
-
         return this.commands.stream()
                 .filter(cmd -> cmd.getName().equals(searchLower) || cmd.getAliases().contains(searchLower)).findFirst().orElse(null);
     }
 
+    /**
+     * Gets all registered commands and returns them.
+     *
+     * @return a list with all registered commands
+     */
     public List<Command> getCommands() {
         return commands;
     }

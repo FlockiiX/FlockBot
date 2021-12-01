@@ -4,7 +4,7 @@ import de.flockiix.flockbot.core.command.Command;
 import de.flockiix.flockbot.core.command.CommandCategory;
 import de.flockiix.flockbot.core.command.CommandEvent;
 import de.flockiix.flockbot.core.model.Server;
-import de.flockiix.flockbot.core.repository.impl.ServerRepositoryImpl;
+import de.flockiix.flockbot.core.repository.ServerRepository;
 import de.flockiix.flockbot.core.sql.SQLWorker;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -42,13 +42,13 @@ public class PrefixCommand extends Command {
             return;
         }
 
-        new ServerRepositoryImpl(event.getBot()).updateServer(new Server(event.getGuild().getId(), prefix, null))
-                .executeRequest(
-                        server -> {
-                            SQLWorker.setPrefix(event.getGuild().getId(), prefix);
-                            event.reply("Prefix set to `" + server.getPrefix() + "`");
-                        }, throwable -> event.reply(event.getErrorMessage(throwable.getMessage()))
-                );
+        try {
+            Server server = ServerRepository.updateServer(event.getBot(), new Server(event.getGuild().getId(), prefix, null));
+            SQLWorker.setPrefix(event.getGuild().getId(), prefix);
+            event.reply("Prefix set to `" + server.getPrefix() + "`");
+        } catch (Exception exception) {
+            event.reply(event.getErrorMessage(exception.getMessage()));
+        }
     }
 
     @Override
