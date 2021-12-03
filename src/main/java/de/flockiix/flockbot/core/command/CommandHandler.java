@@ -13,9 +13,6 @@ import java.util.List;
 
 public class CommandHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandHandler.class);
-    /**
-     * ArrayList with all registered commands
-     */
     private final List<Command> commands = new ArrayList<>();
 
     /**
@@ -58,7 +55,7 @@ public class CommandHandler {
     }
 
     /**
-     * Searches for a command with the given name/alias
+     * Searches for a command with the given name/alias.
      *
      * @param search the name/alias of the command
      * @return the command if found by its name or aliases. Otherwise null
@@ -66,7 +63,8 @@ public class CommandHandler {
     public Command getCommand(String search) {
         String searchLower = search.toLowerCase();
         return this.commands.stream()
-                .filter(cmd -> cmd.getName().equals(searchLower) || cmd.getAliases().contains(searchLower)).findFirst().orElse(null);
+                .filter(cmd -> cmd.getName().equals(searchLower) || cmd.getAliases().contains(searchLower))
+                .findFirst().orElse(null);
     }
 
     /**
