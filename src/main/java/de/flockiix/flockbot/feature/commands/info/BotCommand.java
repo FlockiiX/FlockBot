@@ -5,9 +5,9 @@ import de.flockiix.flockbot.core.command.Command;
 import de.flockiix.flockbot.core.command.CommandCategory;
 import de.flockiix.flockbot.core.command.CommandEvent;
 import de.flockiix.flockbot.core.config.Config;
+import de.flockiix.flockbot.core.util.ButtonUtils;
 import de.flockiix.flockbot.core.util.EmbedBuilderUtils;
 import de.flockiix.flockbot.core.util.TimeUtils;
-import de.flockiix.flockbot.feature.listeners.ButtonClickListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -25,7 +25,7 @@ import java.util.Set;
 public class BotCommand extends Command {
     private static final String INVITE_LINK = Config.get("INVITE_LINK");
     private static final Component INVITE_COMPONENT = Button.link(INVITE_LINK, "Invite me here");
-    private static final Component NEWSLETTER_COMPONENT = Button.of(ButtonStyle.PRIMARY, ButtonClickListener.SUBSCRIBE_NEWSLETTER_ID, "Subscribe to FlockBot newsletter");
+    private static final Component NEWSLETTER_COMPONENT = Button.of(ButtonStyle.PRIMARY, ButtonUtils.SUBSCRIBE_NEWSLETTER_ID, "Subscribe to FlockBot newsletter");
 
     @Override
     public void onCommand(CommandEvent<String, GuildMessageReceivedEvent> event) {

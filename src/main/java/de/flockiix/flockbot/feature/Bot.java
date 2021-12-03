@@ -4,12 +4,15 @@ import com.google.gson.Gson;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import de.flockiix.flockbot.core.bot.BotInfo;
 import de.flockiix.flockbot.core.bot.BotVersion;
+import de.flockiix.flockbot.core.button.ButtonHandler;
+import de.flockiix.flockbot.core.button.ButtonListener;
 import de.flockiix.flockbot.core.command.Command;
 import de.flockiix.flockbot.core.command.CommandHandler;
 import de.flockiix.flockbot.core.command.MessageListener;
 import de.flockiix.flockbot.core.config.Config;
 import de.flockiix.flockbot.core.sql.SQLConnector;
-import de.flockiix.flockbot.feature.listeners.ButtonClickListener;
+import de.flockiix.flockbot.feature.buttons.SubscribeNewsletterButton;
+import de.flockiix.flockbot.feature.buttons.UnsubscribeNewsletterButton;
 import de.flockiix.flockbot.feature.listeners.Listener;
 import net.dv8tion.jda.api.GatewayEncoding;
 import net.dv8tion.jda.api.JDABuilder;
@@ -44,6 +47,7 @@ import java.util.concurrent.TimeUnit;
 public class Bot {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bot.class);
     private final CommandHandler commandHandler;
+    private final ButtonHandler buttonHandler;
     private final OkHttpClient httpClient;
     private final Gson gson;
     private final EventWaiter eventWaiter;
@@ -62,6 +66,7 @@ public class Bot {
         BotInfo.sqlConnector = new SQLConnector();
 
         commandHandler = new CommandHandler();
+        buttonHandler = new ButtonHandler();
         httpClient = new OkHttpClient.Builder()
                 .connectionPool(
                         new ConnectionPool(5, 10, TimeUnit.SECONDS)
@@ -74,7 +79,7 @@ public class Bot {
         Object[] listeners = {
                 new Listener(this),
                 new MessageListener(this),
-                new ButtonClickListener(),
+                new ButtonListener(this),
                 eventWaiter
         };
 
@@ -103,6 +108,18 @@ public class Bot {
             LOGGER.error("Failed to start Bot", exception);
         }
 
+        registerCommands();
+        buttonHandler.registerButtons(
+                new SubscribeNewsletterButton(),
+                new UnsubscribeNewsletterButton()
+        );
+    }
+
+    public static void main(String[] args) {
+        new Bot(Config.get("token"));
+    }
+
+    private void registerCommands() {
         Reflections reflections = new Reflections("de.flockiix.flockbot.feature.commands");
         Set<Class<? extends Command>> classes = reflections.getSubTypesOf(Command.class);
         List<Command> commands = new ArrayList<>();
@@ -120,12 +137,12 @@ public class Bot {
         commandHandler.registerCommands(commands.toArray(Command[]::new));
     }
 
-    public static void main(String[] args) {
-        new Bot(Config.get("token"));
-    }
-
     public CommandHandler getCommandHandler() {
         return commandHandler;
+    }
+
+    public ButtonHandler getButtonHandler() {
+        return buttonHandler;
     }
 
     public OkHttpClient getHttpClient() {
