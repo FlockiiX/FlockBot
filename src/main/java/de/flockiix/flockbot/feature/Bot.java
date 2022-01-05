@@ -85,7 +85,7 @@ public class Bot {
 
         try {
             JDABuilder.createDefault(token)
-                    .setMemberCachePolicy(MemberCachePolicy.VOICE)
+                    .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .enableCache(EnumSet.of(
                             CacheFlag.VOICE_STATE,
                             CacheFlag.EMOTE
