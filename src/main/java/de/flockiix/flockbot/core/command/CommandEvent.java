@@ -84,11 +84,13 @@ public class CommandEvent<E, T> {
 
     public Member getMember() {
         if (event instanceof GuildMessageReceivedEvent) {
-            return ((GuildMessageReceivedEvent) event).getMember();
+            return ((GuildMessageReceivedEvent) event)
+                    .getMember();
         }
 
         if (event instanceof SlashCommandEvent) {
-            return ((SlashCommandEvent) event).getMember();
+            return ((SlashCommandEvent) event)
+                    .getMember();
         }
 
         return null;
@@ -107,19 +109,57 @@ public class CommandEvent<E, T> {
      */
     public void reply(String text) {
         if (event instanceof SlashCommandEvent)
-            ((SlashCommandEvent) event).reply(text).queue();
+            ((SlashCommandEvent) event)
+                    .reply(text)
+                    .queue();
         else
             channel.sendMessage(text).queue();
     }
 
     /**
-     * Sends a embed message into the channel of the event.
+     * Sends an embed message into the channel of the event.
      *
-     * @param embed the text/message you want to send
+     * @param embed the embed you want to send
      */
     public void reply(MessageEmbed embed) {
         if (event instanceof SlashCommandEvent)
-            ((SlashCommandEvent) event).replyEmbeds(embed).queue();
+            ((SlashCommandEvent) event)
+                    .replyEmbeds(embed)
+                    .queue();
+        else
+            channel.sendMessageEmbeds(embed).queue();
+    }
+
+    /**
+     * Sends a message into the channel of the event.
+     * If ephemeral is true only the command executor can read it.
+     *
+     * @param text      the text/message you want to send
+     * @param ephemeral only command executor readability for the message
+     */
+    public void reply(String text, boolean ephemeral) {
+        if (event instanceof SlashCommandEvent)
+            ((SlashCommandEvent) event)
+                    .reply(text)
+                    .setEphemeral(ephemeral)
+                    .queue();
+        else
+            channel.sendMessage(text).queue();
+    }
+
+    /**
+     * Sends an embed into the channel of the event.
+     * If ephemeral is true only the command executor can read it.
+     *
+     * @param embed     the embed you want to send
+     * @param ephemeral only command executor readability for the embed
+     */
+    public void reply(MessageEmbed embed, boolean ephemeral) {
+        if (event instanceof SlashCommandEvent)
+            ((SlashCommandEvent) event)
+                    .replyEmbeds(embed)
+                    .setEphemeral(ephemeral)
+                    .queue();
         else
             channel.sendMessageEmbeds(embed).queue();
     }
@@ -133,11 +173,36 @@ public class CommandEvent<E, T> {
     public void reply(String text, int seconds) {
         if (event instanceof SlashCommandEvent)
             ((SlashCommandEvent) event).reply(text).queue(
-                    message -> message.deleteOriginal().queueAfter(seconds, TimeUnit.SECONDS)
+                    message -> message.deleteOriginal().queueAfter(
+                            seconds, TimeUnit.SECONDS
+                    )
             );
         else
             channel.sendMessage(text).queue(
-                    message -> message.delete().queueAfter(seconds, TimeUnit.SECONDS)
+                    message -> message.delete().queueAfter(
+                            seconds, TimeUnit.SECONDS
+                    )
+            );
+    }
+
+    /**
+     * Sends an embed into the channel of the event and deletes it after the given time.
+     *
+     * @param embed   the embed you want to send
+     * @param seconds the number of seconds after which the message should be deleted
+     */
+    public void reply(MessageEmbed embed, int seconds) {
+        if (event instanceof SlashCommandEvent)
+            ((SlashCommandEvent) event).replyEmbeds(embed).queue(
+                    message -> message.deleteOriginal().queueAfter(
+                            seconds, TimeUnit.SECONDS
+                    )
+            );
+        else
+            channel.sendMessageEmbeds(embed).queue(
+                    message -> message.delete().queueAfter(
+                            seconds, TimeUnit.SECONDS
+                    )
             );
     }
 
@@ -176,7 +241,10 @@ public class CommandEvent<E, T> {
      * @return the error embed with text
      */
     public MessageEmbed createErrorEmbed(String text) {
-        return EmbedBuilderUtils.createErrorEmbed().setDescription(text).build();
+        return EmbedBuilderUtils
+                .createErrorEmbed()
+                .setDescription(text)
+                .build();
     }
 
     /**
@@ -186,7 +254,10 @@ public class CommandEvent<E, T> {
      * @return the default embed with text
      */
     public MessageEmbed createDefaultEmbed(String text) {
-        return EmbedBuilderUtils.createDefaultEmbed().setDescription(text).build();
+        return EmbedBuilderUtils
+                .createDefaultEmbed()
+                .setDescription(text)
+                .build();
     }
 
     /**
