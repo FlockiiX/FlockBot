@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import java.util.Collections;
 import java.util.List;
 
+// A command to test things temporarily
 public class DebugCommand extends Command {
     @Override
     public void onCommand(CommandEvent<String, GuildMessageReceivedEvent> event) {
