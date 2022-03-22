@@ -37,21 +37,23 @@ public class Listener extends ListenerAdapter {
 
         var guild = event.getGuild();
         var guildId = guild.getId();
-        if (ServerRepository.getServerByIdOrNull(bot, guildId) != null) {
-            if (guild.getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
-                channel.sendMessage("I am back again :D\nThank you for adding **FlockBot** to your guild!").queue();
-                return;
-            }
 
-            try {
-                ServerRepository.updateServer(bot, new Server(guildId, SQLWorker.getPrefix(guildId), false));
-                if (guild.getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
-                    channel.sendMessage("Thank you for adding **FlockBot** to your guild!").queue();
-                }
-            } catch (Exception exception) {
-                if (guild.getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
-                    channel.sendMessage(ChangeMessages.getErrorMessage() + exception.getMessage()).queue();
-                }
+        if (ServerRepository.getServerByIdOrNull(bot, guildId) == null)
+            return;
+
+        if (guild.getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
+            channel.sendMessage("I am back again :D\nThank you for adding **FlockBot** to your guild!").queue();
+            return;
+        }
+
+        try {
+            ServerRepository.updateServer(bot, new Server(guildId, SQLWorker.getPrefix(guildId), false));
+            if (guild.getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
+                channel.sendMessage("Thank you for adding **FlockBot** to your guild!").queue();
+            }
+        } catch (Exception exception) {
+            if (guild.getSelfMember().hasPermission(channel, Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE)) {
+                channel.sendMessage(ChangeMessages.getErrorMessage() + exception.getMessage()).queue();
             }
         }
     }

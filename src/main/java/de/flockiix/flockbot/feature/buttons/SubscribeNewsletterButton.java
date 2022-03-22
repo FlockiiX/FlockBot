@@ -24,18 +24,19 @@ public class SubscribeNewsletterButton extends Button {
 
         SQLWorker.setNewsletter(userId, true);
         final String messageForUser = message;
-        if (event.getGuild() != null) {
-            user.openPrivateChannel().submit()
-                    .thenCompose(privateChannel -> privateChannel.sendMessage(messageForUser).setActionRow(UNSUBSCRIBE_BUTTON).submit())
-                    .whenComplete((msg, throwable) -> {
-                        if (throwable != null)
-                            event.reply("Open your dms").queue();
-                        else
-                            event.reply("Sent you a private message").queue();
-                    });
-        } else {
+        if (event.getGuild() == null) {
             event.reply(messageForUser).addActionRow(UNSUBSCRIBE_BUTTON).queue();
+            return;
         }
+
+        user.openPrivateChannel().submit()
+                .thenCompose(privateChannel -> privateChannel.sendMessage(messageForUser).setActionRow(UNSUBSCRIBE_BUTTON).submit())
+                .whenComplete((msg, throwable) -> {
+                    if (throwable != null)
+                        event.reply("Open your dms").queue();
+                    else
+                        event.reply("Sent you a private message").queue();
+                });
     }
 
     @Override
