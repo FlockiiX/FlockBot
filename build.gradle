@@ -24,7 +24,7 @@ dependencies {
     implementation('net.dv8tion:JDA:4.3.0_334')
 
     // GSON
-    implementation('com.google.code.gson:gson:2.8.9')
+    implementation('com.google.code.gson:gson:2.9.0')
 
     // CHEWTILS
     implementation('pw.chew:jda-chewtils:1.22.0')
@@ -41,6 +41,9 @@ dependencies {
     // SLF4J
     implementation('org.slf4j:slf4j-api:2.0.0-alpha4')
     implementation('org.slf4j:slf4j-jdk14:2.0.0-alpha4')
+
+    // GOOGLE GUAVA
+    implementation('com.google.guava:guava:31.1-jre')
 
     // JUNIT
     testImplementation('org.junit.jupiter:junit-jupiter-api:5.8.2')
